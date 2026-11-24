@@ -63,7 +63,15 @@ label.ck input{width:auto;margin:0}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='bookshelf.v1';
-const FIREBASE_CONFIG=null; // PASTE your Firebase web config here to turn on accounts + sync: {apiKey:"...",authDomain:"...",projectId:"...",appId:"..."}
+const FIREBASE_CONFIG={
+  apiKey: "AIzaSyCrucWZzoh23lrNthI5xq8w4CaUYEckdLY",
+  authDomain: "booklibary-5f7cc.firebaseapp.com",
+  databaseURL: "https://booklibary-5f7cc-default-rtdb.firebaseio.com",
+  projectId: "booklibary-5f7cc",
+  storageBucket: "booklibary-5f7cc.firebasestorage.app",
+  messagingSenderId: "190595448053",
+  appId: "1:190595448053:web:7d3092eb7b6e62a90c19bc",
+  measurementId: "G-TMK3DENDYT"};
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
 function loadGuest(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
 let S=Object.assign({books:[],groups:[],url:''},loadGuest()||{}),user=null,fb=null,unsub=null,merged=false,booted=false;
