@@ -52,6 +52,17 @@ label.ck input{width:auto;margin:0}
 #sc:after{content:'';position:absolute;left:7%;right:7%;top:36%;height:28%;border:2px solid #fff9;border-radius:14px;pointer-events:none}
 #sct{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 18px;background:linear-gradient(#000b,#0000);color:#fff}
 #sct button{background:#0009;color:#fff;border-color:#fff5}
+.cvs{position:relative;display:flex;gap:18px;align-items:center;overflow-x:auto;scroll-snap-type:x mandatory;padding:42px calc(50% - 60px) 46px;margin:0 0 10px;background:radial-gradient(55% 75% at 50% 50%,color-mix(in srgb,var(--acc) 28%,transparent),transparent 72%);scrollbar-width:none}
+.cvs::-webkit-scrollbar{display:none}
+.cvs.two{justify-content:center;padding-inline:0}
+.cp{position:relative;flex:none;width:120px;aspect-ratio:2/3;border-radius:5px 12px 12px 5px;overflow:hidden;scroll-snap-align:center;display:grid;place-items:center;color:#fff;font:700 34px ui-serif,Georgia,serif;cursor:pointer;opacity:.55;filter:brightness(1.18) saturate(.55);transform:scale(.88);box-shadow:0 6px 14px rgba(0,0,0,.18),inset 5px 0 0 rgba(0,0,0,.18);transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s,filter .3s,box-shadow .3s}
+.cp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cp:after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.32),rgba(255,255,255,0) 42%);pointer-events:none}
+.cp.sel{opacity:1;filter:none;transform:scale(1.12);box-shadow:0 22px 40px rgba(0,0,0,.4),0 0 0 3px var(--acc),0 0 42px 8px color-mix(in srgb,var(--acc) 60%,transparent),inset 5px 0 0 rgba(0,0,0,.2)}
+.cp.add{background:rgba(128,128,128,.22);border:2px solid rgba(128,128,128,.4);box-shadow:none;color:var(--mut);font:300 56px/1 -apple-system,system-ui,sans-serif;opacity:1;filter:none;backdrop-filter:blur(4px)}
+.cp.add:after{display:none}.cp.add:active{transform:scale(.82)}
+.bd{position:absolute;left:6px;top:6px;z-index:2;font:600 10px/1 -apple-system,sans-serif;background:var(--g);color:#06251a;padding:4px 7px;border-radius:99px;font-style:normal}
+.cv[data-act]{cursor:pointer}
 #scc{width:46px;height:46px;padding:0;display:grid;place-items:center;border-radius:50%}
 #scc.on{background:var(--g);color:#06251a;border-color:var(--g)}
 .scn #t{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
@@ -92,9 +103,9 @@ let view='lib',q='',flt='all',draft={},reopen=null,rd=null,tt,stm=0,ocrOn=false,
 
 function toast(s){const t=$('#t');t.textContent=s;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
 function modal(h){$('#mb').innerHTML=h;$('#m').classList.add('show')}
-function closeM(){clearTimeout(stm);ocrOn=false;if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc)sc.remove();document.body.classList.remove('scn');$('#m').classList.remove('show');$('#mb').innerHTML=''}
+function closeM(){clearTimeout(stm);ocrOn=false;cv=null;if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc){sc.remove();if(scanDone){const f=scanDone;scanDone=null;setTimeout(f,0)}}document.body.classList.remove('scn');$('#m').classList.remove('show');$('#mb').innerHTML=''}
 function hue(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h}
-function cover(b){return `<div class="cv" style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
+function cover(b,a){return `<div class="cv"${a?` data-act="covers" data-id="${b.id}" role="button" aria-label="Change cover"`:''} style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
 function dot(b){return `<button class="st ${b.out?'o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"><i></i>${b.out?'Out':'In storage'}</button>`}
 
 function render(){
@@ -124,7 +135,7 @@ function render(){
 function list(){
   const k=q.toLowerCase();
   const bs=S.books.filter(b=>(flt==='all'||(flt==='out')===!!b.out)&&(b.title+' '+b.author+' '+b.isbn).toLowerCase().includes(k)).sort((a,b)=>a.title.localeCompare(b.title));
-  $('#list').innerHTML=bs.length?bs.map(b=>`<div class="row" data-act="edit" data-id="${b.id}">${cover(b)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'Unknown author')}</span></div>${dot(b)}</div>`).join(''):
+  $('#list').innerHTML=bs.length?bs.map(b=>`<div class="row" data-act="edit" data-id="${b.id}">${cover(b,1)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'Unknown author')}</span></div>${dot(b)}</div>`).join(''):
   `<div class="empty">${S.books.length?'No books match.':'Your library is empty. Tap Add book to scan or type one in.'}</div>`;
 }
 
@@ -138,10 +149,11 @@ async function lookup(isbn){
 function addBook(o){
   o.isbn=toIsbn(o.isbn||'')||o.isbn||'';
   if(o.isbn&&S.books.some(b=>(toIsbn(b.isbn)||b.isbn)===o.isbn)){toast('Already in your library');return false}
-  S.books.push({id:uid(),title:o.title,author:o.author||'',isbn:o.isbn||'',cover:o.cover||'',notes:o.notes||'',out:false});
-  save();return true;
+  const nb={id:uid(),title:o.title,author:o.author||'',isbn:o.isbn||'',cover:o.cover||'',notes:o.notes||'',out:false};S.books.push(nb);
+  save();return nb;
 }
 async function isbnAdd(isbn,keep){
+  if(scanG)return addToGroup(isbn);
   toast('Looking up '+isbn+'…');
   const d=await lookup(isbn)||await lookupBC(isbn);
   if(d&&addBook({...d,isbn})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
@@ -238,6 +250,7 @@ function openHash(h){
 function groupForm(id){
   const g=S.groups.find(x=>x.id===id)||{name:'',ids:[]};
   modal(`<h2>${id?'Edit group':'New group'}</h2><input id="gn" placeholder="Group name (e.g. Garage box 2)" value="${esc(g.name)}">
+  <button class="p" data-act="scang" data-id="${id||''}" style="width:100%;margin:0 0 12px">Scan books into this group</button>
   <div style="margin:0 0 14px">${S.books.length?S.books.map(b=>`<label class="ck"><input type="checkbox" value="${b.id}" ${g.ids.includes(b.id)?'checked':''}><span>${esc(b.title)}</span></label>`).join(''):'<p class="mut">Add some books first.</p>'}</div>
   <div class="bar"><button class="p" data-act="saveg" data-id="${id||''}">Save group</button><button data-act="close">Cancel</button></div>
   ${id?`<button class="d" data-act="delg" data-id="${id}" style="width:100%">Delete group</button>`:''}`);
@@ -301,6 +314,7 @@ function scanBook(){
   },true,true);
 }
 async function useBarcode(c,keep){
+  if(scanG)return addToGroup(c);
   toast('No ISBN found. Trying barcode '+c+'…');
   const d=await lookup(c)||await lookupBC(c);
   if(d&&addBook({...d,isbn:d.isbn||c})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
@@ -353,7 +367,9 @@ const loadJS=u=>new Promise((ok,no)=>{const s=document.createElement('script');s
 const GM='Google sign-in did not open here. Try Safari, or use email and password.';
 function authMsg(e){return({'auth/invalid-credential':'Wrong email or password','auth/wrong-password':'Wrong email or password','auth/user-not-found':'No account with that email','auth/email-already-in-use':'That email already has an account. Tap Sign in.','auth/weak-password':'Use a password with at least 6 characters','auth/invalid-email':'Check the email address','auth/popup-blocked':GM,'auth/popup-closed-by-user':GM,'auth/operation-not-supported-in-this-environment':GM,'auth/unauthorized-domain':'Add this site to Authorized domains in Firebase'})[e.code]||e.message||'Sign-in failed'}
 function authDo(fn){fn().then(closeM).catch(e=>toast(authMsg(e)))}
-function push(){if(!user)return;fb.d.doc('users/'+user.uid).set({json:JSON.stringify({books:S.books.map(b=>({...b,cover:''})),groups:S.groups}),t:Date.now()}).catch(()=>toast('Could not sync. Check your connection.'))}
+function push(){if(!user)return;const j=JSON.stringify({books:S.books,groups:S.groups});
+  if(j.length>950000)return toast('Library is too big to sync. Remove some custom cover photos.');
+  fb.d.doc('users/'+user.uid).set({json:j,t:Date.now()}).catch(()=>toast('Could not sync. Check your connection.'))}
 function merge(a,g){const mp={};
   g.books.forEach(b=>{const d=a.books.find(x=>x.id===b.id||(b.isbn&&x.isbn===b.isbn));if(d)mp[b.id]=d.id;else a.books.push(b)});
   g.groups.forEach(x=>{if(!a.groups.some(y=>y.id===x.id))a.groups.push({...x,ids:x.ids.map(i=>mp[i]||i)})});return a}
@@ -399,6 +415,79 @@ function acctModal(){
   <button data-act="guest" style="width:100%">Continue as guest (this device only)</button>`);
 }
 
+
+/* ---- scan straight into a group ---- */
+let scanG=null,scanDone=null,cv=null;
+async function addToGroup(code){
+  const g=S.groups.find(x=>x.id===scanG);if(!g)return;
+  const k=toIsbn(code)||code;
+  let b=S.books.find(x=>(toIsbn(x.isbn)||x.isbn)===k);
+  if(!b){toast('Not in your library yet. Looking up '+k+'…');const d=await lookup(k)||await lookupBC(k);b=addBook({...(d||{title:'Unknown book '+k}),isbn:k})}
+  if(!b)return;
+  if(g.ids.includes(b.id)){toast('Already in '+g.name+': '+b.title);return}
+  g.ids.push(b.id);save();scanN++;toast('Added to '+g.name+': '+b.title);scs('Added '+scanN+' to '+g.name+'. Scan the next one');
+}
+
+/* ---- cover picker ---- */
+const ck=u=>String(u||'').split('?')[0].replace('&edge=curl','').replace(/-[SML]\.jpg$/,'-X.jpg');
+const defCover=b=>{const i=toIsbn(b.isbn)||b.isbn;return b.cover||(i?'https://covers.openlibrary.org/b/isbn/'+i+'-L.jpg?default=false':'')};
+function coverList(b){
+  const cur=defCover(b),seen=new Set(),all=[];
+  [cur,...(b.alts||[]),...(b.custom||[])].forEach(u=>{if(u&&!seen.has(ck(u))){seen.add(ck(u));all.push(u)}});
+  const curU=cur?all[0]:'',others=all.filter(u=>u!==curU);
+  return{cur:curU,arr:curU?(others.length?[others[0],curU,...others.slice(1)]:[curU]):others};
+}
+async function fetchAlts(b){
+  const out=[],isbn=toIsbn(b.isbn)||b.isbn,add=u=>{if(u&&!out.includes(u))out.push(u)};
+  if(isbn){
+    try{const j=await (await fetch('https://openlibrary.org/isbn/'+isbn+'.json')).json();(j.covers||[]).filter(x=>x>0).forEach(c=>add('https://covers.openlibrary.org/b/id/'+c+'-L.jpg?default=false'))}catch(e){}
+    add('https://covers.openlibrary.org/b/isbn/'+isbn+'-L.jpg?default=false');
+    try{const j=await (await fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:'+isbn)).json();const v=j.items&&j.items[0]&&j.items[0].volumeInfo;if(v&&v.imageLinks)add((v.imageLinks.thumbnail||v.imageLinks.smallThumbnail).replace('http:','https:').replace('&edge=curl',''))}catch(e){}
+  }
+  try{const j=await (await fetch('https://openlibrary.org/search.json?title='+encodeURIComponent((b.title||'').split(':')[0])+(b.author?'&author='+encodeURIComponent(b.author.split(',')[0]):'')+'&limit=6&fields=cover_i')).json();(j.docs||[]).forEach(d=>d.cover_i&&add('https://covers.openlibrary.org/b/id/'+d.cover_i+'-L.jpg?default=false'))}catch(e){}
+  const seen=new Set(),uniq=out.filter(u=>!seen.has(ck(u))&&seen.add(ck(u)));
+  const ok=await Promise.all(uniq.map(u=>new Promise(r=>{const i=new Image(),t=setTimeout(()=>r(0),7000);i.onload=()=>{clearTimeout(t);r(i.naturalWidth>40)};i.onerror=()=>{clearTimeout(t);r(0)};i.src=u})));
+  return uniq.filter((u,i)=>ok[i]).slice(0,8);
+}
+function centerSel(instant){const c=$('#cvs'),e=c&&c.querySelector('.sel');if(c&&e)c.scrollTo({left:e.offsetLeft-(c.clientWidth-e.offsetWidth)/2,behavior:instant?'auto':'smooth'})}
+function updDel(){const d=$('#cvdel');if(d)d.style.display=cv&&cv.sel&&cv.sel.startsWith('data:')?'':'none'}
+function selCov(i){
+  if(!cv)return;cv.sel=cv.arr[i];
+  document.querySelectorAll('#cvs .cp[data-i]').forEach(e=>e.classList.toggle('sel',+e.dataset.i===i));
+  centerSel();updDel();
+}
+function showCovers(id){
+  const b=S.books.find(x=>x.id===id);if(!b)return;
+  if(!cv||cv.id!==id)cv={id,sel:'',arr:[],busy:0};
+  const{cur,arr}=coverList(b),selU=cv.sel||cur||arr[0]||'',used=ck(defCover(b));
+  cv.arr=arr;cv.sel=selU;
+  const si=arr.findIndex(u=>ck(u)===ck(selU));
+  modal(`<h2>Choose a cover</h2><p class="mut" style="margin:-6px 0 0">${esc(b.title)}</p>
+  <div id="cvs" class="cvs${arr.length<2?' two':''}">${arr.map((u,i)=>`<div class="cp${i===si?' sel':''}" data-act="pick" data-i="${i}" style="background:hsl(${hue(b.title||'?')} 38% 36%)"><span>${esc((b.title||'?')[0].toUpperCase())}</span><img src="${esc(u)}" alt="" onerror="this.remove()">${ck(u)===used?'<i class="bd">In use</i>':''}</div>`).join('')}<div class="cp add" data-act="addcov" role="button" aria-label="Add your own cover photo">+</div></div>
+  <input id="cvf" type="file" accept="image/*" style="display:none">
+  <div class="bar"><button class="p" data-act="usecov">Use this cover</button><button id="cvdel" class="d" data-act="delcov" style="display:none">Delete photo</button><button data-act="close">Close</button></div>`);
+  setTimeout(()=>{centerSel(true);updDel()},30);
+  if(!b.alts&&!cv.busy){cv.busy=1;fetchAlts(b).then(a=>{b.alts=a;save();if(cv)cv.busy=0;if(cv&&cv.id===id&&$('#cvs'))showCovers(id)})}
+}
+function addPhoto(f){
+  if(!cv)return;const b=S.books.find(x=>x.id===cv.id);if(!b)return;
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{
+    const k=Math.min(1,480/im.height,320/im.width),c=document.createElement('canvas');
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    const d=c.toDataURL('image/jpeg',.78);
+    b.custom=(b.custom||[]).concat(d);if(cv)cv.sel=d;save();showCovers(b.id);toast('Photo added to this book\u2019s covers');
+  };
+  im.onerror=()=>toast('Could not read that photo');
+  im.src=url;
+}
+function delCov(){
+  const b=cv&&S.books.find(x=>x.id===cv.id);if(!b||!cv.sel)return;
+  b.custom=(b.custom||[]).filter(u=>u!==cv.sel);if(b.cover===cv.sel)b.cover='';
+  cv.sel='';save();render();showCovers(b.id);
+}
+
 document.addEventListener('click',e=>{
   const nv=e.target.closest('nav button');if(nv){view=nv.dataset.v;render();return}
   const el=e.target.closest('[data-act]');if(!el){if(e.target.id==='m')closeM();return}
@@ -423,6 +512,19 @@ document.addEventListener('click',e=>{
   else if(a==='saveqr')saveQR();
   else if(a==='scanqr')scan(t=>{const i=t.indexOf('text=');openHash(i>-1?decodeURIComponent(t.slice(i+5)):t.slice(Math.max(0,t.indexOf('#'))))||toast('That is not a Bookshelf group code')});
   else if(a==='cont'){cont=!cont;ls('bookshelf.cont',cont?'1':'0');updC()}
+  else if(a==='covers'){cv=null;showCovers(id)}
+  else if(a==='pick')selCov(+el.dataset.i);
+  else if(a==='addcov')$('#cvf').click();
+  else if(a==='usecov'){const b=cv&&S.books.find(x=>x.id===cv.id);if(b){if(cv.sel)b.cover=cv.sel;save();closeM();render()}}
+  else if(a==='delcov')delCov();
+  else if(a==='scang'){
+    const n=$('#gn').value.trim();if(!n)return toast('Name the group first');
+    const ids=[...document.querySelectorAll('#mb .ck input:checked')].map(x=>x.value);
+    let g=S.groups.find(x=>x.id===id);
+    if(g){g.name=n;g.ids=ids}else{g={id:uid(),name:n,ids};S.groups.push(g)}
+    save();render();scanG=g.id;scanBook();
+    if($('#sc')){scs('Scan books into '+n);scanDone=()=>{scanG=null;groupForm(g.id);render()}}else scanG=null;
+  }
   else if(a==='mic')dictate(id,el.dataset.d==='1',el);
   else if(a==='acct')acctModal();
   else if(a==='google')authDo(()=>fb.a.signInWithPopup(new firebase.auth.GoogleAuthProvider()));
@@ -436,7 +538,7 @@ document.addEventListener('click',e=>{
   else if(a==='exp'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='bookshelf-backup.json';l.click()}
   else if(a==='imp')$('#f').click();
 });
-document.addEventListener('change',e=>{if(e.target.id==='cont'){cont=e.target.checked;ls('bookshelf.cont',cont?'1':'0')}});
+document.addEventListener('change',e=>{if(e.target.id==='cont'){cont=e.target.checked;ls('bookshelf.cont',cont?'1':'0')}else if(e.target.id==='cvf'){const f=e.target.files[0];if(f)addPhoto(f)}});
 document.addEventListener('input',e=>{if(e.target.id==='s'){q=e.target.value;list()}});
 window.addEventListener('hashchange',()=>booted&&openHash(location.hash));
 render();
