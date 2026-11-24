@@ -46,38 +46,35 @@ label.ck{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1p
 label.ck input{width:auto;margin:0}
 #t{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;z-index:9;display:none;max-width:90%}
 .qr{width:100%;border-radius:10px;background:#fff}
-#sv{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 72px);display:none;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:10px 12px;border-radius:14px;z-index:4}
-#sv span{flex:1;font-size:14px}#sv button{background:var(--g);color:#06251a;border:0;font-weight:700}
+.f{display:flex;gap:8px}.f input{flex:1;min-width:0}.f button{flex:none;margin:0 0 10px}
 </style>
 </head>
 <body>
-<header><h1>Bookshelf</h1><button data-act="set" aria-label="Settings">Settings</button></header>
+<header><h1>Bookshelf</h1><div><button id="acb" data-act="acct">Sign in</button> <button data-act="set" aria-label="Settings">Settings</button></div></header>
 <main id="main"></main>
 <nav>
 <button data-v="lib">Library</button><button data-v="add">Add book</button><button data-v="grp">Groups</button>
 </nav>
 <div id="m"><div id="mb"></div></div>
 <div id="t"></div>
-<div id="sv"><span>Changes not saved yet</span><button data-act="isave">Save to iCloud</button></div>
-<script type="application/json" id="init">__DATA__</script>
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='bookshelf.v1';
-let S={books:[],groups:[],url:''},canLS=false;
-try{localStorage.setItem('_t','1');localStorage.removeItem('_t');canLS=true}catch(e){}
-try{const r=canLS&&localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
-try{const t=$('#init').textContent.trim();if(t&&t!=='__DATA__')S=Object.assign(S,JSON.parse(decodeURIComponent(escape(atob(t)))))}catch(e){}
-const ser=()=>btoa(unescape(encodeURIComponent(JSON.stringify({books:S.books.map(b=>({...b,cover:''})),groups:S.groups,url:S.url}))));
-function save(){if(canLS){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}else $('#sv').style.display='flex'}
+const FIREBASE_CONFIG=null; // PASTE your Firebase web config here to turn on accounts + sync: {apiKey:"...",authDomain:"...",projectId:"...",appId:"..."}
+const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
+function loadGuest(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
+let S=Object.assign({books:[],groups:[],url:''},loadGuest()||{}),user=null,fb=null,unsub=null,merged=false,booted=false;
+const pendingHash=location.hash;
+function save(){if(user)push();else try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save on this device')}}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-let view='lib',q='',flt='all',draft={},reopen=null,rd=null,tt;
+let view='lib',q='',flt='all',draft={},reopen=null,rd=null,tt,stm=0;
 
 function toast(s){const t=$('#t');t.textContent=s;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
 function modal(h){$('#mb').innerHTML=h;$('#m').classList.add('show')}
-function closeM(){if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;$('#m').classList.remove('show');$('#mb').innerHTML=''}
+function closeM(){clearTimeout(stm);if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;$('#m').classList.remove('show');$('#mb').innerHTML=''}
 function hue(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h}
 function cover(b){return `<div class="cv" style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
 function dot(b){return `<button class="st ${b.out?'o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"><i></i>${b.out?'Out':'In storage'}</button>`}
@@ -93,10 +90,10 @@ function render(){
   }else if(view==='add'){
     m.innerHTML=`<div class="card"><h2>Add a book</h2>
     <div class="bar"><button class="p" data-act="scanisbn">Scan barcode</button></div>
-    <input id="isbn" inputmode="numeric" placeholder="ISBN (optional)" value="${esc(draft.isbn||'')}">
+    <div class="f"><input id="isbn" placeholder="ISBN (optional)" value="${esc(draft.isbn||'')}"><button data-act="mic" data-id="isbn" data-d="1" aria-label="Speak the ISBN">Speak</button></div>
     <button data-act="look" style="margin:0 0 14px">Look up details from ISBN</button>
-    <input id="ti" placeholder="Title" value="${esc(draft.title||'')}">
-    <input id="au" placeholder="Author" value="${esc(draft.author||'')}">
+    <div class="f"><input id="ti" placeholder="Title" value="${esc(draft.title||'')}"><button data-act="mic" data-id="ti" aria-label="Speak the title">Speak</button></div>
+    <div class="f"><input id="au" placeholder="Author" value="${esc(draft.author||'')}"><button data-act="mic" data-id="au" aria-label="Speak the author">Speak</button></div>
     <textarea id="no" rows="2" placeholder="Notes (optional)">${esc(draft.notes||'')}</textarea>
     <button class="p" data-act="addman" style="width:100%">Add to library</button></div>`;
   }else{
@@ -127,15 +124,15 @@ function addBook(o){
 }
 async function isbnAdd(isbn){
   toast('Looking up '+isbn+'…');
-  const d=await lookup(isbn);
+  const d=await lookup(isbn)||await lookupBC(isbn);
   if(d&&addBook({...d,isbn})){toast('Added: '+d.title);view='lib';render()}
   else if(!d){draft={isbn};view='add';render();toast('Not found. Type the title in.')}
 }
-function scan(cb){
-  if(!navigator.mediaDevices||!window.ZXing){toast('Camera not available on this page. Use the Scan Book shortcut, or type the ISBN.');return}
+function scan(cb,multi){
+  if(!navigator.mediaDevices||!window.ZXing){toast('Camera not available. Allow camera access, or type or speak the ISBN.');return}
   modal(`<h2>Point at the code</h2><video id="v" playsinline muted></video><button data-act="close" style="width:100%">Cancel</button>`);
   rd=new ZXing.BrowserMultiFormatReader();
-  rd.decodeFromConstraints({video:{facingMode:'environment'}},'v',r=>{if(r){const t=r.getText();closeM();cb(t)}}).catch(()=>{closeM();toast('Camera not available on this page. Use the Scan Book shortcut, or type the ISBN.')});
+  rd.decodeFromConstraints({video:{facingMode:'environment'}},'v',r=>{if(r){const t=r.getText();if(multi){if(cb(t))closeM()}else{closeM();cb(t)}}}).catch(()=>{closeM();toast('Camera not available. Allow camera access, or type or speak the ISBN.')});
 }
 
 function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
@@ -149,13 +146,14 @@ function qrCanvas(text,title){
 }
 function showQR(id){
   const g=S.groups.find(x=>x.id===id);if(!g)return;
-  const txt='g:'+encodeURIComponent(g.name.replace(/\|/g,' '))+'|'+g.ids.join(',');
-  const link=S.url?S.url+'#'+txt:'shortcuts://run-shortcut?name=Bookshelf&input=text&text='+encodeURIComponent(txt);
+  const txt='g:'+encodeURIComponent(g.name.replace(/\|/g,' '))+'|~'+g.id;
+  const base=S.url||(location.protocol.startsWith('http')?location.origin+location.pathname:'');
+  const link=base?base+'#'+txt:'shortcuts://run-shortcut?name=Bookshelf&input=text&text='+encodeURIComponent(txt);
   let c;
   try{c=qrCanvas(link,g.name)}catch(e){toast('Too many books for one QR. Split the group.');return}
   const url=c.toDataURL('image/png');
   modal(`<h2>${esc(g.name)} QR</h2><img class="qr" src="${url}" alt="QR code for ${esc(g.name)}">
-  <p class="mut">Press and hold the image to save it to Photos, or use the buttons. Scanning it with your Camera opens this group in Bookshelf with live in/out status. Re-make it if you add or remove books in the group.</p>
+  <p class="mut">Press and hold the image to save it to Photos, or use the buttons. This code never goes out of date: it always opens the group's current books, even after you add or remove some. Older codes keep working too.</p>
   <div class="bar"><a id="dl" download="${esc(g.name)}-qr.png" href="${url}" style="display:none"></a><button class="p" data-act="saveqr">Save image</button><button data-act="grp" data-id="${id}">Back</button></div>`);
   window._qr={url,name:g.name};
 }
@@ -183,7 +181,11 @@ function showShared(p){
 }
 function openHash(h){
   h=h||'';let m=h.match(/^#?g:(.*)\|([^|]*)$/);
-  if(m){try{showShared({n:decodeURIComponent(m[1]),b:m[2]?m[2].split(','):[]});return true}catch(e){return false}}
+  if(m){try{const name=decodeURIComponent(m[1]),ids=m[2]?m[2].split(','):[];
+    let g=ids[0]&&ids[0][0]==='~'?S.groups.find(x=>x.id===ids[0].slice(1)):null;
+    g=g||S.groups.find(x=>x.name.toLowerCase()===name.toLowerCase());
+    if(!g){const sc=S.groups.map(x=>[x,x.ids.filter(i=>ids.includes(i)).length]).filter(a=>a[1]).sort((a,b)=>b[1]-a[1]);g=sc[0]&&sc[0][0]}
+    if(g)showGroup(g.id);else showShared({n:name,b:ids.filter(i=>i[0]!=='~')});return true}catch(e){return false}}
   m=h.match(/^#?(\d{10,13})$/);if(m){isbnAdd(m[1]);return true}
   m=h.match(/#g=(.+)$/);if(!m)return false;
   try{showShared(JSON.parse(decodeURIComponent(escape(atob(m[1])))));return true}catch(e){toast('That QR code could not be read');return false}
@@ -211,6 +213,97 @@ function settings(){
   $('#f').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.books)||!Array.isArray(d.groups))throw 0;S=Object.assign({url:S.url},d);save();closeM();render();toast('Backup restored')}catch(x){toast('That file is not a Bookshelf backup')}};r.readAsText(f)};
 }
 
+
+/* ---- scanning: ISBN first, other barcodes as fallback ---- */
+const chk13=s=>{let t=0;for(let i=0;i<12;i++)t+=s[i]*(i%2?3:1);return (10-t%10)%10==s[12]};
+const chk10=s=>{let t=0;for(let i=0;i<10;i++)t+=(s[i]=='X'?10:+s[i])*(10-i);return t%11==0};
+function toIsbn(s){s=String(s).replace(/[\s-]/g,'').toUpperCase();if(/^97[89]\d{10}$/.test(s)&&chk13(s))return s;
+  if(/^\d{9}[\dX]$/.test(s)&&chk10(s)){const b='978'+s.slice(0,9);let t=0;for(let i=0;i<12;i++)t+=b[i]*(i%2?3:1);return b+(10-t%10)%10}return''}
+async function lookupBC(c){try{const j=await (await fetch('https://openlibrary.org/search.json?q='+encodeURIComponent(c)+'&limit=1&fields=title,author_name,isbn')).json();
+  const x=j.docs&&j.docs[0];if(x)return{title:x.title,author:(x.author_name||[]).join(', '),isbn:(x.isbn&&x.isbn[0])||''}}catch(e){}return null}
+function scanBook(){
+  let fb='';
+  scan(t=>{
+    const i=toIsbn(t);
+    if(i){isbnAdd(i);return true}
+    if(!fb&&/^\d{8,14}$/.test(t)){fb=t;stm=setTimeout(()=>{closeM();useBarcode(fb)},3500)}
+    return false;
+  },true);
+}
+async function useBarcode(c){
+  toast('No ISBN found. Trying barcode '+c+'…');
+  const d=await lookup(c)||await lookupBC(c);
+  if(d&&addBook({...d,isbn:d.isbn||c})){toast('Added: '+d.title);view='lib';render()}
+  else if(!d){draft={isbn:c};view='add';render();toast('No match for that barcode. Type the title in.')}
+}
+function doLook(){
+  const i=$('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase();if(!i)return toast('Enter an ISBN first');
+  draft={isbn:i,notes:$('#no').value};toast('Looking up…');
+  lookup(i).then(d=>d||lookupBC(i)).then(d=>{if(d)draft={...draft,...d,isbn:i};else toast('No match. Type the details in.');render()});
+}
+function dictate(id,digits){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return toast('Voice input is not supported in this browser');
+  const W={zero:0,oh:0,o:0,one:1,two:2,to:2,too:2,three:3,four:4,for:4,five:5,six:6,seven:7,eight:8,nine:9,x:'X',ex:'X'};
+  const r=new SR();r.lang='en-US';r.interimResults=false;
+  r.onresult=e=>{let t=e.results[0][0].transcript;
+    if(digits)t=t.toLowerCase().split(/[\s-]+/).map(w=>W.hasOwnProperty(w)?W[w]:w).join('').replace(/[^0-9X]/gi,'').toUpperCase();
+    $('#'+id).value=t;if(digits&&toIsbn(t))doLook()};
+  r.onerror=()=>toast('Could not hear that. Check microphone permission.');
+  toast('Listening…');try{r.start()}catch(e){}
+}
+
+/* ---- accounts + sync (Firebase) ---- */
+const loadJS=u=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+const GM='Google sign-in did not open here. Try Safari, or use email and password.';
+function authMsg(e){return({'auth/invalid-credential':'Wrong email or password','auth/wrong-password':'Wrong email or password','auth/user-not-found':'No account with that email','auth/email-already-in-use':'That email already has an account. Tap Sign in.','auth/weak-password':'Use a password with at least 6 characters','auth/invalid-email':'Check the email address','auth/popup-blocked':GM,'auth/popup-closed-by-user':GM,'auth/operation-not-supported-in-this-environment':GM,'auth/unauthorized-domain':'Add this site to Authorized domains in Firebase'})[e.code]||e.message||'Sign-in failed'}
+function authDo(fn){fn().then(closeM).catch(e=>toast(authMsg(e)))}
+function push(){if(!user)return;fb.d.doc('users/'+user.uid).set({json:JSON.stringify({books:S.books.map(b=>({...b,cover:''})),groups:S.groups}),t:Date.now()}).catch(()=>toast('Could not sync. Check your connection.'))}
+function merge(a,g){const mp={};
+  g.books.forEach(b=>{const d=a.books.find(x=>x.id===b.id||(b.isbn&&x.isbn===b.isbn));if(d)mp[b.id]=d.id;else a.books.push(b)});
+  g.groups.forEach(x=>{if(!a.groups.some(y=>y.id===x.id))a.groups.push({...x,ids:x.ids.map(i=>mp[i]||i)})});return a}
+function detach(){if(unsub){unsub();unsub=null}}
+function onSnap(snap){
+  if(snap.metadata.hasPendingWrites)return;
+  if(!snap.exists&&snap.metadata.fromCache)return;
+  let cur=null;try{cur=snap.exists?JSON.parse(snap.data().json):null}catch(e){}
+  if(!merged){merged=true;const g=loadGuest();let d=cur||{books:[],groups:[]};
+    if(g&&((g.books||[]).length+(g.groups||[]).length)){d=merge(d,{books:g.books||[],groups:g.groups||[]});try{localStorage.removeItem(KEY)}catch(e){}toast('Guest books moved to your account');S.books=d.books;S.groups=d.groups;push()}
+    else{S.books=d.books;S.groups=d.groups;if(!cur)push()}
+  }else if(cur){S.books=cur.books;S.groups=cur.groups}
+  render();reopen&&reopen();boot();
+}
+function authChanged(u){
+  user=u;detach();merged=false;$('#acb').textContent=u?'Account':'Sign in';
+  if(u)unsub=fb.d.doc('users/'+u.uid).onSnapshot(onSnap,()=>{toast('Sync error. Check your connection.');boot()});
+  else{S=Object.assign({books:[],groups:[],url:S.url||''},loadGuest()||{});render();boot()}
+}
+async function initCloud(){
+  if(!FIREBASE_CONFIG)return boot();
+  setTimeout(boot,5000);
+  try{const b='https://www.gstatic.com/firebasejs/10.14.1/';
+    await loadJS(b+'firebase-app-compat.js');await Promise.all([loadJS(b+'firebase-auth-compat.js'),loadJS(b+'firebase-firestore-compat.js')]);
+    firebase.initializeApp(FIREBASE_CONFIG);fb={a:firebase.auth(),d:firebase.firestore()};
+    fb.d.enablePersistence({synchronizeTabs:true}).catch(()=>{});
+    fb.a.onAuthStateChanged(authChanged);
+  }catch(e){toast('Sync could not load. Using this device only.');boot()}
+}
+function boot(){
+  if(booted)return;booted=true;render();
+  if(pendingHash&&openHash(pendingHash))return;
+  if(FIREBASE_CONFIG&&!user&&!ls('bookshelf.guest'))acctModal();
+}
+function acctModal(){
+  if(!fb){modal(`<h2>Account</h2><p class="mut">Sign-in is not turned on yet, so your books are saved on this device only.</p><button data-act="close" style="width:100%">Close</button>`);return}
+  if(user){modal(`<h2>Account</h2><p>${esc(user.email||'Signed in')}</p><p class="mut">Your library syncs across your devices.</p><button class="d" data-act="signout" style="width:100%;margin:0 0 8px">Sign out</button><button data-act="close" style="width:100%">Close</button>`);return}
+  modal(`<h2>Sign in to sync</h2><p class="mut">Use any email and password, or Google. Books you added as a guest move into your account.</p>
+  <button class="p" data-act="google" style="width:100%;margin:0 0 12px">Continue with Google</button>
+  <input id="em" type="email" autocomplete="email" placeholder="Email"><input id="pw" type="password" autocomplete="current-password" placeholder="Password">
+  <div class="bar"><button class="p" data-act="signin">Sign in</button><button data-act="signup">Create account</button></div>
+  <button data-act="reset" style="width:100%;margin:0 0 8px">Forgot password</button>
+  <button data-act="guest" style="width:100%">Continue as guest (this device only)</button>`);
+}
+
 document.addEventListener('click',e=>{
   const nv=e.target.closest('nav button');if(nv){view=nv.dataset.v;render();return}
   const el=e.target.closest('[data-act]');if(!el){if(e.target.id==='m')closeM();return}
@@ -221,10 +314,10 @@ document.addEventListener('click',e=>{
   else if(a==='edit')editBook(id);
   else if(a==='saveb'){const b=S.books.find(x=>x.id===id),t=$('#ti').value.trim();if(!t)return toast('Add a title');Object.assign(b,{title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.trim(),notes:$('#no').value.trim()});save();closeM();render()}
   else if(a==='delb'){if(confirm('Delete this book?')){S.books=S.books.filter(x=>x.id!==id);S.groups.forEach(g=>g.ids=g.ids.filter(i=>i!==id));save();closeM();render()}}
-  else if(a==='scanisbn')scan(t=>{const d=t.replace(/\D/g,'');d.length>=10&&d.length<=13?isbnAdd(d):toast('That is not a book barcode')});
-  else if(a==='look'){const i=$('#isbn').value.replace(/\D/g,'');if(!i)return toast('Enter an ISBN first');draft={isbn:i,notes:$('#no').value};toast('Looking up…');lookup(i).then(d=>{if(d){draft={...draft,...d,notes:draft.notes}}else toast('No match. Type the details in.');render()})}
+  else if(a==='scanisbn')scanBook();
+  else if(a==='look')doLook();
   else if(a==='addman'){const t=$('#ti').value.trim();if(!t)return toast('Add a title');
-    if(addBook({title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.replace(/\D/g,''),notes:$('#no').value.trim(),cover:draft.cover})){draft={};view='lib';render();toast('Added')}}
+    if(addBook({title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase(),notes:$('#no').value.trim(),cover:draft.cover})){draft={};view='lib';render();toast('Added')}}
   else if(a==='newg')groupForm();
   else if(a==='editg')groupForm(id);
   else if(a==='saveg'){const n=$('#gn').value.trim();if(!n)return toast('Name the group');const ids=[...document.querySelectorAll('#mb .ck input:checked')].map(x=>x.value);
@@ -234,16 +327,23 @@ document.addEventListener('click',e=>{
   else if(a==='qr')showQR(id);
   else if(a==='saveqr')saveQR();
   else if(a==='scanqr')scan(t=>{const i=t.indexOf('text=');openHash(i>-1?decodeURIComponent(t.slice(i+5)):t.slice(Math.max(0,t.indexOf('#'))))||toast('That is not a Bookshelf group code')});
-  else if(a==='isave')location.href='shortcuts://run-shortcut?name='+encodeURIComponent('Bookshelf Save')+'&input=text&text='+encodeURIComponent(ser());
+  else if(a==='mic')dictate(id,el.dataset.d==='1');
+  else if(a==='acct')acctModal();
+  else if(a==='google')authDo(()=>fb.a.signInWithPopup(new firebase.auth.GoogleAuthProvider()));
+  else if(a==='signin')authDo(()=>fb.a.signInWithEmailAndPassword($('#em').value.trim(),$('#pw').value));
+  else if(a==='signup')authDo(()=>fb.a.createUserWithEmailAndPassword($('#em').value.trim(),$('#pw').value));
+  else if(a==='reset'){const e=$('#em').value.trim();if(!e)return toast('Type your email first');fb.a.sendPasswordResetEmail(e).then(()=>toast('Password reset email sent')).catch(x=>toast(authMsg(x)))}
+  else if(a==='signout')fb.a.signOut().then(closeM);
+  else if(a==='guest'){ls('bookshelf.guest','1');closeM()}
   else if(a==='set')settings();
   else if(a==='saveu'){S.url=$('#url').value.trim();save();toast('Link saved')}
   else if(a==='exp'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='bookshelf-backup.json';l.click()}
   else if(a==='imp')$('#f').click();
 });
 document.addEventListener('input',e=>{if(e.target.id==='s'){q=e.target.value;list()}});
-window.addEventListener('hashchange',()=>openHash(location.hash));
+window.addEventListener('hashchange',()=>booted&&openHash(location.hash));
 render();
-if(location.hash)openHash(location.hash);
+initCloud();
 </script>
 </body>
 </html>
