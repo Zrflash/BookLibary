@@ -44,7 +44,7 @@ nav button.on{color:var(--acc)}
 video{width:100%;border-radius:12px;background:#000;margin:0 0 10px;aspect-ratio:4/3;object-fit:cover}
 label.ck{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 label.ck input{width:auto;margin:0}
-#t{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;z-index:9;display:none;max-width:90%}
+#t{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;z-index:40;display:none;max-width:90%}
 .qr{width:100%;border-radius:10px;background:#fff}
 .f button.rec{background:var(--r);color:#fff;border-color:var(--r)}
 #sc{position:fixed;inset:0;background:#000;z-index:30}
@@ -52,6 +52,9 @@ label.ck input{width:auto;margin:0}
 #sc:after{content:'';position:absolute;left:7%;right:7%;top:36%;height:28%;border:2px solid #fff9;border-radius:14px;pointer-events:none}
 #sct{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 18px;background:linear-gradient(#000b,#0000);color:#fff}
 #sct button{background:#0009;color:#fff;border-color:#fff5}
+#scc{width:46px;height:46px;padding:0;display:grid;place-items:center;border-radius:50%}
+#scc.on{background:var(--g);color:#06251a;border-color:var(--g)}
+.scn #t{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
 #sct span{flex:1;font-size:15px;text-align:right}
 .f{display:flex;gap:8px}.f input{flex:1;min-width:0}.f button{flex:none;margin:0 0 10px}
 </style>
@@ -89,7 +92,7 @@ let view='lib',q='',flt='all',draft={},reopen=null,rd=null,tt,stm=0,ocrOn=false,
 
 function toast(s){const t=$('#t');t.textContent=s;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
 function modal(h){$('#mb').innerHTML=h;$('#m').classList.add('show')}
-function closeM(){clearTimeout(stm);ocrOn=false;if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc)sc.remove();$('#m').classList.remove('show');$('#mb').innerHTML=''}
+function closeM(){clearTimeout(stm);ocrOn=false;if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc)sc.remove();document.body.classList.remove('scn');$('#m').classList.remove('show');$('#mb').innerHTML=''}
 function hue(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h}
 function cover(b){return `<div class="cv" style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
 function dot(b){return `<button class="st ${b.out?'o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"><i></i>${b.out?'Out':'In storage'}</button>`}
@@ -133,23 +136,27 @@ async function lookup(isbn){
   return null;
 }
 function addBook(o){
-  if(o.isbn&&S.books.some(b=>b.isbn===o.isbn)){toast('Already in your library');return false}
+  o.isbn=toIsbn(o.isbn||'')||o.isbn||'';
+  if(o.isbn&&S.books.some(b=>(toIsbn(b.isbn)||b.isbn)===o.isbn)){toast('Already in your library');return false}
   S.books.push({id:uid(),title:o.title,author:o.author||'',isbn:o.isbn||'',cover:o.cover||'',notes:o.notes||'',out:false});
   save();return true;
 }
-async function isbnAdd(isbn){
+async function isbnAdd(isbn,keep){
   toast('Looking up '+isbn+'…');
   const d=await lookup(isbn)||await lookupBC(isbn);
-  if(d&&addBook({...d,isbn})){toast('Added: '+d.title);view='lib';render()}
-  else if(!d){draft={isbn};view='add';render();toast('Not found. Type the title in.')}
+  if(d&&addBook({...d,isbn})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
+  else if(!d){
+    if(keep){addBook({title:'Unknown book '+isbn,isbn});toast('Not found. Saved as Unknown book so you can edit it later.');bump()}
+    else{draft={isbn};view='add';render();toast('Not found. Type the title in.')}
+  }
 }
 const scs=t=>{const e=$('#scs');if(e)e.textContent=t};
 function scan(cb,multi,ocr){
   if(!navigator.mediaDevices||!window.ZXing){toast('Camera not available. Allow camera access, or type or speak the ISBN.');return}
   closeM();
   const o=document.createElement('div');o.id='sc';
-  o.innerHTML=`<video id="v" playsinline muted></video><div id="sct"><button data-act="close">Cancel</button><span id="scs">${ocr?'Show the printed ISBN or the barcode':'Point at the QR code'}</span></div>`;
-  document.body.appendChild(o);
+  o.innerHTML=`<video id="v" playsinline muted></video><div id="sct"><button data-act="close">Done</button>${ocr?`<button id="scc" data-act="cont" class="${cont?'on':''}" aria-pressed="${cont}" title="Continuous scan ${cont?'on':'off'}">${cIcon()}</button>`:''}<span id="scs">${ocr?(cont?'Continuous scan on. Show an ISBN or barcode':'Show the printed ISBN or the barcode'):'Point at the QR code'}</span></div>`;
+  document.body.appendChild(o);document.body.classList.add('scn');
   rd=new ZXing.BrowserMultiFormatReader();
   rd.decodeFromConstraints({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}},'v',r=>{if(r){const t=r.getText();if(multi){if(cb(t,'bc'))closeM()}else{closeM();cb(t)}}}).catch(()=>{closeM();toast('Camera blocked. Allow camera access, or type or speak the ISBN.')});
   if(ocr)setTimeout(()=>ocrLoop(cb),700);
@@ -165,7 +172,7 @@ async function ocrLoop(cb){
     if(v&&v.videoWidth){
       const k=Math.min(1,1600/v.videoWidth);c.width=v.videoWidth*k;c.height=v.videoHeight*k;
       if(n%2){x.save();x.translate(c.width,c.height);x.rotate(Math.PI);x.drawImage(v,0,0,c.width,c.height);x.restore()}else x.drawImage(v,0,0,c.width,c.height);
-      scs('Reading the ISBN…');
+      scs(scanN?'Added '+scanN+'. Reading the next ISBN…':'Reading the ISBN…');
       try{const r=await tess.recognize(c);if(!ocrOn)break;if(cb(r.data.text,'ocr')){closeM();break}}catch(e){}
       n++;
     }
@@ -243,6 +250,7 @@ function editBook(id){
 }
 function settings(){
   modal(`<h2>Settings</h2><p class="mut">${S.books.length} books, ${S.groups.length} groups.</p>
+  <label class="ck"><input type="checkbox" id="cont" ${cont?'checked':''}><span>Continuous scan: keep the camera open and add one book after another</span></label>
   <label class="mut">Page link used in QR codes (optional)</label><input id="url" placeholder="https://… link to this page" value="${esc(S.url)}">
   <div class="bar"><button class="p" data-act="saveu">Save link</button></div>
   <div class="bar"><button data-act="exp">Back up to file</button><button data-act="imp">Restore backup</button></div>
@@ -263,31 +271,46 @@ function ocrIsbn(t){
   const u=String(t).toUpperCase(),re=/[0-9OIL][0-9OIL\s-]{8,22}[0-9X]/g;let m;
   while((m=re.exec(u))){
     const s=m[0].replace(/[OIL]/g,c=>c=='O'?'0':'1').replace(/[^0-9X]/g,'');
-    const kw=/[I1L]SBN|BOOK NUMBER/.test(u.slice(Math.max(0,m.index-32),m.index));
+    const kw=/[I1L][S5][BE8][NM]|BOOK\s*NUMBER/.test(u.slice(Math.max(0,m.index-32),m.index));
     for(const L of [13,10])for(let i=0;i+L<=s.length;i++){const k=toIsbn(s.slice(i,i+L));if(k&&(L===13||kw))return k}
   }
   return'';
 }
+let cont=ls('bookshelf.cont')==='1',scanN=0,lastI='',lastT=0,pauseT=0;
+const cIcon=()=>`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M16.95 7.05A7 7 0 1 0 16.95 16.95" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>${cont?'':'<path d="M4 20L20 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'}</svg>`;
+function updC(){const b=$('#scc');if(!b)return;b.innerHTML=cIcon();b.classList.toggle('on',cont);b.setAttribute('aria-pressed',cont);b.title='Continuous scan '+(cont?'on':'off');scs(cont?'Continuous scan on. Scan the next book':'Continuous scan off')}
+const bump=()=>{scanN++;scs('Added '+scanN+(scanN>1?' books':' book')+'. Scan the next one');render()};
 function scanBook(){
-  const t0=Date.now();let ocrOK=true,tries=0,bcI='',bcO='';
+  scanN=0;lastI='';let t0=Date.now(),ocrOK=true,tries=0,bcI='',bcO='';
+  const take=(i,fn)=>{
+    if(cont){
+      if(i===lastI&&Date.now()-lastT<5000)return false;
+      lastI=i;lastT=Date.now();pauseT=Date.now()+1500;t0=Date.now();tries=0;bcI='';bcO='';fn(i);return false;
+    }
+    fn(i);return true;
+  };
   scan((t,k)=>{
+    if(Date.now()<pauseT)return false;
     const el=Date.now()-t0;
     if(k==='noocr')ocrOK=false;
-    else if(k==='ocr'){tries++;const f=ocrIsbn(t);if(f){isbnAdd(f);return true}}
+    else if(k==='ocr'){tries++;const f=ocrIsbn(t);if(f)return take(f,i=>isbnAdd(i,cont))}
     else{const i=toIsbn(t);if(i)bcI=i;else if(!bcO&&/^\d{8,14}$/.test(t))bcO=t}
-    if(bcI&&(!ocrOK||tries>=2||el>(tries?7000:3500))){isbnAdd(bcI);return true}
-    if(!bcI&&bcO&&(!ocrOK||tries>=4||el>9000)){useBarcode(bcO);return true}
+    if(bcI&&(!ocrOK||tries>=2||el>(tries?7000:3500)))return take(bcI,i=>isbnAdd(i,cont));
+    if(!bcI&&bcO&&(!ocrOK||tries>=4||el>9000))return take(bcO,c=>useBarcode(c,cont));
     return false;
   },true,true);
 }
-async function useBarcode(c){
+async function useBarcode(c,keep){
   toast('No ISBN found. Trying barcode '+c+'…');
   const d=await lookup(c)||await lookupBC(c);
-  if(d&&addBook({...d,isbn:d.isbn||c})){toast('Added: '+d.title);view='lib';render()}
-  else if(!d){draft={isbn:c};view='add';render();toast('No match for that barcode. Type the title in.')}
+  if(d&&addBook({...d,isbn:d.isbn||c})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
+  else if(!d){
+    if(keep){addBook({title:'Unknown book '+c,isbn:c});toast('No match. Saved as Unknown book so you can edit it later.');bump()}
+    else{draft={isbn:c};view='add';render();toast('No match for that barcode. Type the title in.')}
+  }
 }
 function doLook(){
-  const i=$('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase();if(!i)return toast('Enter an ISBN first');
+  const i=(x=>toIsbn(x)||x)($('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase());if(!i)return toast('Enter an ISBN first');
   draft={isbn:i,title:$('#ti').value,author:$('#au').value,notes:$('#no').value};toast('Looking up…');
   lookup(i).then(d=>d||lookupBC(i)).then(d=>{if(d)draft={...draft,...d,isbn:i};else toast('No match. Type the details in.');render()});
 }
@@ -384,7 +407,7 @@ document.addEventListener('click',e=>{
   else if(a==='tog'){const b=S.books.find(x=>x.id===id);if(b){b.out=!b.out;save();render();reopen&&reopen()}}
   else if(a==='flt'){flt=id;render()}
   else if(a==='edit')editBook(id);
-  else if(a==='saveb'){const b=S.books.find(x=>x.id===id),t=$('#ti').value.trim();if(!t)return toast('Add a title');Object.assign(b,{title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.trim(),notes:$('#no').value.trim()});save();closeM();render()}
+  else if(a==='saveb'){const b=S.books.find(x=>x.id===id),t=$('#ti').value.trim();if(!t)return toast('Add a title');Object.assign(b,{title:t,author:$('#au').value.trim(),isbn:(x=>toIsbn(x)||x)($('#isbn').value.trim()),notes:$('#no').value.trim()});save();closeM();render()}
   else if(a==='delb'){if(confirm('Delete this book?')){S.books=S.books.filter(x=>x.id!==id);S.groups.forEach(g=>g.ids=g.ids.filter(i=>i!==id));save();closeM();render()}}
   else if(a==='scanisbn')scanBook();
   else if(a==='look')doLook();
@@ -399,6 +422,7 @@ document.addEventListener('click',e=>{
   else if(a==='qr')showQR(id);
   else if(a==='saveqr')saveQR();
   else if(a==='scanqr')scan(t=>{const i=t.indexOf('text=');openHash(i>-1?decodeURIComponent(t.slice(i+5)):t.slice(Math.max(0,t.indexOf('#'))))||toast('That is not a Bookshelf group code')});
+  else if(a==='cont'){cont=!cont;ls('bookshelf.cont',cont?'1':'0');updC()}
   else if(a==='mic')dictate(id,el.dataset.d==='1',el);
   else if(a==='acct')acctModal();
   else if(a==='google')authDo(()=>fb.a.signInWithPopup(new firebase.auth.GoogleAuthProvider()));
@@ -412,6 +436,7 @@ document.addEventListener('click',e=>{
   else if(a==='exp'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='bookshelf-backup.json';l.click()}
   else if(a==='imp')$('#f').click();
 });
+document.addEventListener('change',e=>{if(e.target.id==='cont'){cont=e.target.checked;ls('bookshelf.cont',cont?'1':'0')}});
 document.addEventListener('input',e=>{if(e.target.id==='s'){q=e.target.value;list()}});
 window.addEventListener('hashchange',()=>booted&&openHash(location.hash));
 render();
