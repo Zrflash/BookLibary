@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>Bookshelf Plus</title>
+<title>Bookshelf</title>
 <meta property="og:title" content="Bookshelf"><meta property="og:description" content="My book collection, wishlist and reading stats."><meta property="og:type" content="website"><meta name="theme-color" content="#1f3a5f">
 <style>
 :root{--bg:#eef1f4;--card:#fff;--ink:#16202e;--mut:#6b7686;--line:#dde2e9;--acc:#1f3a5f;--on:#fff;--g:#22b573;--r:#e5484d;--fav:#cf7f89}
-@media(prefers-color-scheme:dark){:root{--bg:#10151c;--card:#19212b;--ink:#eef2f7;--mut:#8f9bad;--line:#27313e;--acc:#8fb4e8;--on:#0c1624;--fav:#d9959d}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151c;--card:#19212b;--ink:#eef2f7;--mut:#8f9bad;--line:#27313e;--acc:#8fb4e8;--on:#0c1624;--fav:#d9959d}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,"Segoe UI",sans-serif;padding:0 0 90px}
 header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 6px}
@@ -96,6 +96,103 @@ button.gd:before{content:'';position:absolute;inset:-14px}
 .scn #t{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
 #sct span{flex:1;font-size:15px;text-align:right}
 .f{display:flex;gap:8px}.f input{flex:1;min-width:0}.f button{flex:none;margin:0 0 10px}
+
+/* ===== v3 ===== */
+:root{--dg:#52a768;--dr:#d95a60}
+:root[data-theme="dark"]{--bg:#10151c;--card:#19212b;--ink:#eef2f7;--mut:#8f9bad;--line:#27313e;--acc:#8fb4e8;--on:#0c1624;--fav:#d9959d}
+:root[data-theme="light"]{--bg:#eef1f4;--card:#fff;--ink:#16202e;--mut:#6b7686;--line:#dde2e9;--acc:#1f3a5f;--on:#fff;--fav:#cf7f89}
+.adapt main,.adapt header,.adapt nav,.adapt #mb{zoom:var(--z)}
+.chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;align-items:center}.chips::-webkit-scrollbar{display:none}
+.chips button{white-space:nowrap;flex:none}
+.f.s2{margin:0 0 10px}.f.s2 input{margin:0}.f.s2 button{margin:0}
+.dc{width:46px;padding:0;display:grid;place-items:center}
+.two{display:flex;gap:8px;margin:0 0 10px}.two>*{flex:1;min-width:0;margin:0}
+.mt .x{display:block;font-size:12px;color:var(--mut)}
+.row.fv{box-shadow:inset 3px 0 0 var(--fav)}
+.dense .row{padding:6px 8px}.dense .row .cv{width:34px;height:48px;font-size:16px}
+.gloss .cv{position:relative}.gloss .cv:after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.35),rgba(255,255,255,0) 45%);pointer-events:none}
+.gd{width:14px;height:14px;right:-4px;bottom:-4px;top:auto;border:4px solid var(--bg);box-sizing:content-box;background:var(--dg);box-shadow:none}
+.gd.o{background:var(--dr);box-shadow:none}
+button.gd:before{inset:-12px}
+/* swipe rows */
+.sw{position:relative;margin:0 0 8px;border-radius:12px;overflow:hidden;touch-action:pan-y}
+.sw .row{margin:0;position:relative;z-index:1;will-change:transform}
+.swf,.swr{position:absolute;inset:0;display:none;align-items:center}
+.sw.al .swf{display:flex}.sw.ar .swr{display:flex}
+.swf{background:var(--fav);padding-left:24px;color:#fff}
+.swf svg{transform:scale(calc(.6 + var(--p,0)*.6));opacity:calc(.4 + var(--p,0)*.6)}
+.sw.go .swf{filter:brightness(1.08)}
+.swr{justify-content:flex-end;gap:8px;padding-right:12px;background:var(--bg)}
+.sc{width:64px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;color:var(--mut);font-size:11px}
+.sc .ci{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.sc .ci.b{background:#3a82f7}.sc .ci.r{background:var(--dr)}
+.sw.full .swr{background:var(--dr)}.sw.full .sc{opacity:0}
+.swr .tr{position:absolute;right:26px;color:#fff;opacity:0}.sw.full .swr .tr{opacity:1}
+#ut{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);display:none;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:8px 8px 8px 16px;border-radius:14px;z-index:8}
+#ut span{flex:1;font-size:14px}#ut button{background:none;border:0;color:#2f6fd6;font-weight:700;padding:8px 12px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid var(--line);cursor:pointer}
+.chk{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:var(--on)}.chk.on{background:var(--acc);border-color:var(--acc)}
+/* random picker */
+.rw{position:relative;height:210px;overflow:hidden;margin:6px -16px 10px;background:radial-gradient(60% 80% at 50% 50%,color-mix(in srgb,var(--acc) 28%,transparent),transparent 72%)}
+.rt{position:absolute;left:0;top:50%;display:flex;gap:14px;transform:translateY(-50%);will-change:transform}
+.rc{flex:none;width:104px;aspect-ratio:2/3;border-radius:5px 10px 10px 5px;overflow:hidden;position:relative;display:grid;place-items:center;color:#fff;font:700 30px ui-serif,Georgia,serif;opacity:.5;filter:saturate(.6) brightness(1.1);transform:scale(.88);transition:transform .15s,opacity .15s,filter .15s;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.rc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rc.mid{opacity:1;filter:none;transform:scale(1.08)}
+.rc.won{opacity:1;filter:none;transform:scale(1.3);z-index:2;box-shadow:0 22px 44px rgba(0,0,0,.45),0 0 0 3px var(--acc),0 0 56px 12px color-mix(in srgb,var(--acc) 65%,transparent);animation:wonp 1.3s ease-in-out infinite alternate}
+@keyframes wonp{to{box-shadow:0 22px 44px rgba(0,0,0,.45),0 0 0 3px var(--acc),0 0 84px 24px color-mix(in srgb,var(--acc) 80%,transparent)}}
+.rm{position:absolute;left:50%;top:6px;bottom:6px;border-left:2px dashed color-mix(in srgb,var(--acc) 55%,transparent);pointer-events:none;z-index:3}
+.cf{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:4;animation:cfa 1.1s ease-out forwards}
+@keyframes cfa{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+/* add tab */
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;margin:0 0 14px}
+.seg button{flex:1;border:0;background:none;padding:9px 6px;border-radius:9px;font-weight:600;color:var(--mut)}.seg button.on{background:var(--acc);color:var(--on)}
+.hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px;border-radius:18px;border:0;color:#fff;background:linear-gradient(135deg,#1f3a5f,#3a6fd6);box-shadow:0 12px 28px rgba(31,58,95,.35);margin:0 0 14px}
+.hero svg{flex:none}.hero b{display:block;font-size:18px}.hero span{opacity:.85;font-size:13px;display:block}
+.pv{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin:0 0 12px;min-height:84px}
+.pv .mt b{white-space:normal}
+.shm{background:linear-gradient(100deg,rgba(128,128,128,.14) 30%,rgba(128,128,128,.3) 50%,rgba(128,128,128,.14) 70%);background-size:200% 100%;animation:shm 1.2s linear infinite}
+@keyframes shm{to{background-position:-200% 0}}
+/* cover loading */
+.ldb{height:3px;border-radius:3px;overflow:hidden;background:var(--line);margin:0 0 2px}.ldb i{display:block;height:100%;width:40%;background:var(--acc);border-radius:3px;animation:ldb 1.1s ease-in-out infinite}
+@keyframes ldb{0%{margin-left:-40%}100%{margin-left:100%}}
+.cp.sk{cursor:default;opacity:.8;filter:none;box-shadow:none}.cp.sk:after{display:none}
+.cp.in{animation:cin .5s cubic-bezier(.2,.9,.2,1) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes cin{from{opacity:0;transform:translateY(16px) scale(.7)}}
+/* scanner */
+#scv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+#sct{z-index:3;justify-content:space-between}
+#scb{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:3;background:rgba(15,20,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;border-radius:18px;padding:14px 16px;text-align:center}
+#scb b{display:block;font-size:17px;margin:0 0 4px}#scb span{font-size:14px;opacity:.85}
+#sc:after{display:none}
+/* group editor + cards */
+.pkg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 12px;margin:0 0 14px}
+.pkt{position:relative;cursor:pointer}
+.pkt .cv{width:100%;height:auto;aspect-ratio:2/3;border-radius:4px 10px 10px 4px;font-size:28px;transition:transform .15s,opacity .15s,box-shadow .15s;opacity:.6}
+.pkt.on .cv{opacity:1;transform:scale(.96);box-shadow:0 0 0 3px var(--acc),0 8px 20px rgba(0,0,0,.3)}
+.pkt .k2{position:absolute;right:-6px;top:-6px;width:20px;height:20px;border-radius:50%;background:var(--acc);color:var(--on);display:none;place-items:center;border:3px solid var(--bg);box-sizing:content-box;z-index:2}
+.pkt.on .k2{display:grid}
+.pkt .cap{font-size:12px;margin-top:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sws{display:flex;gap:10px;margin:0 0 14px}.sws i{width:30px;height:30px;border-radius:50%;cursor:pointer;box-shadow:0 0 0 2px var(--line)}.sws i.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.gc{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 10px;cursor:pointer;border-left:5px solid var(--gcol,var(--acc))}
+.stk{display:flex;flex:none;min-width:36px}.stk .cv{width:36px;height:52px;margin-left:-14px;border:2px solid var(--card);box-shadow:0 4px 10px rgba(0,0,0,.25);font-size:16px}.stk .cv:first-child{margin-left:0}
+/* settings + profile */
+.sg{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 14px;overflow:hidden}
+.sg h4{margin:0;padding:12px 14px 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.sr{display:flex;align-items:center;gap:12px;padding:11px 14px;border-top:1px solid var(--line)}
+.sr .mt b,.sr .mt span{white-space:normal}.sr .mt b{font-weight:600}.sr input{margin:0;flex:1}
+.tg{position:relative;width:48px;height:28px;flex:none}.tg input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;z-index:2;cursor:pointer}
+.tg i{position:absolute;inset:0;border-radius:99px;background:var(--line);transition:background .2s}
+.tg i:after{content:'';position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .2s}
+.tg input:checked+i{background:var(--dg)}.tg input:checked+i:after{transform:translateX(20px)}
+.sgm{display:flex;background:var(--bg);border-radius:9px;padding:2px;flex:none}.sgm button{border:0;background:none;padding:6px 10px;border-radius:7px;font-size:13px;color:var(--mut)}.sgm button.on{background:var(--acc);color:var(--on)}
+.pt button{padding:6px 12px;font-size:13px}
+.pfh{display:flex;gap:12px;align-items:flex-start;margin:0 0 6px}.pfh .fl{flex:1;min-width:0}
+#pb input:not([type=checkbox]):not([type=file]):not([type=search]),#pb textarea{height:44px;margin:0 0 8px;padding:0 12px}
+#pb textarea{padding:10px 12px;line-height:1.3;resize:none;transition:height .2s}#pb textarea:focus{height:92px}
+.hdl{display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 8px;height:44px;padding-left:12px;overflow:hidden}
+.hdl i{font-style:normal;color:var(--mut)}.hdl input{border:0!important;background:none;margin:0!important;height:42px!important;flex:1;padding:0 6px!important;min-width:0}
+.hdl button{border:0;border-left:1px solid var(--line);border-radius:0;height:100%;padding:0 12px;font-size:13px}
+.bk .cv{width:130px;height:195px;font-size:44px;border-radius:5px 12px 12px 5px;box-shadow:inset 6px 0 0 rgba(0,0,0,.2),0 14px 30px rgba(0,0,0,.3)}
 </style>
 </head>
 <body>
@@ -106,22 +203,16 @@ button.gd:before{content:'';position:absolute;inset:-14px}
 </nav>
 <div id="m"><div id="mb"></div></div>
 <div id="t"></div>
+<div id="ut"></div>
+<script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='bookshelf.v1';
-const FIREBASE_CONFIG={
-  apiKey: "AIzaSyCrucWZzoh23lrNthI5xq8w4CaUYEckdLY",
-  authDomain: "booklibary-5f7cc.firebaseapp.com",
-  databaseURL: "https://booklibary-5f7cc-default-rtdb.firebaseio.com",
-  projectId: "booklibary-5f7cc",
-  storageBucket: "booklibary-5f7cc.firebasestorage.app",
-  messagingSenderId: "190595448053",
-  appId: "1:190595448053:web:7d3092eb7b6e62a90c19bc",
-  measurementId: "G-TMK3DENDYT"};
-const SHARE_WORKER='https://bookshelf-share.iigzz239.workers.dev';
+const FIREBASE_CONFIG=(window.BOOKSHELF&&window.BOOKSHELF.firebase)||null; // set in config.js
+const SHARE_WORKER=(window.BOOKSHELF&&window.BOOKSHELF.worker)||null; // set in config.js
 const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){}};
 function loadGuest(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
 let S=Object.assign({books:[],groups:[],wish:[],profile:{},shares:[],url:''},loadGuest()||{}),user=null,fb=null,unsub=null,merged=false,booted=false;
@@ -132,44 +223,35 @@ let view='lib',q='',flt='all',draft={},reopen=null,rd=null,tt,stm=0,ocrOn=false,
 
 function toast(s){const t=$('#t');t.textContent=s;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
 function modal(h){$('#mb').innerHTML=h;$('#m').classList.add('show')}
-function closeM(){clearTimeout(stm);ocrOn=false;cv=null;if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc){sc.remove();if(scanDone){const f=scanDone;scanDone=null;setTimeout(f,0)}}document.body.classList.remove('scn');$('#m').classList.remove('show');$('#mb').innerHTML=''}
+function closeM(){clearTimeout(stm);ocrOn=false;cv=null;if(typeof wl!=='undefined'&&wl){try{wl.release()}catch(e){}wl=null}if(rd){try{rd.reset()}catch(e){}rd=null}reopen=null;const sc=$('#sc');if(sc){sc.remove();if(scanDone){const f=scanDone;scanDone=null;setTimeout(f,0)}}document.body.classList.remove('scn');$('#m').classList.remove('show');$('#mb').innerHTML=''}
 function hue(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h}
-function cover(b,a){return `<div class="cv"${a?` data-act="covers" data-id="${b.id}" role="button" aria-label="Change cover"`:''} style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
-function dot(b){return `<button class="st ${b.out?'o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"><i></i>${b.out?'Out'+(b.since?' \u00b7 '+dur(Date.now()-b.since):''):'In storage'}</button>`}
+function cover(b,a,bk){return `<div class="cv"${a?` data-act="covers" data-id="${b.id}"${bk?` data-back="${bk}"`:''} role="button" aria-label="Change cover"`:''} style="background:hsl(${hue(b.title||'?')} 38% 36%)">${(b.cover||b.isbn)?`<img src="${esc(b.cover||'https://covers.openlibrary.org/b/isbn/'+b.isbn+'-M.jpg?default=false')}" alt="" onerror="this.remove()">`:''}<span>${esc((b.title||'?')[0].toUpperCase())}</span></div>`}
+function dot(b){return `<button class="st ${b.out?'o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"><i></i>${b.out?'Out'+(cfg.outdays&&b.since?' \u00b7 '+dur(Date.now()-b.since):''):'In storage'}</button>`}
 
 function render(){updAv();
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
   const m=$('#main');
   if(view==='lib'){
     const n=S.books.length,o=S.books.filter(b=>b.out).length;
-    m.innerHTML=`<input id="s" type="search" placeholder="Search title, author or ISBN" value="${esc(q)}">
-    <div class="chips">${[['all','All '+n],['in','In storage '+(n-o)],['out','Out '+o]].map(c=>`<button data-act="flt" data-id="${c[0]}" class="${flt===c[0]?'on':''}">${c[1]}</button>`).join('')}<button class="vt" data-act="srt" aria-label="Change sort order" title="Sort order">${({title:'A\u2013Z',author:'Author',new:'Newest',out:'Out longest'})[srt]||'A\u2013Z'}</button><button class="vt" data-act="vt" aria-label="Switch view" title="Switch view">${vIcon()}</button></div><div id="list"></div>`;
+    m.innerHTML=`<div class="f s2"><input id="s" type="search" placeholder="Search title, author or ISBN" value="${esc(q)}"><button class="dc" data-act="rand" aria-label="Pick a random book">${DICE}</button></div>
+    <div class="chips">${[['all','All '+n],['in','In storage '+(n-o)],['out','Out '+o]].map(c=>`<button data-act="flt" data-id="${c[0]}" class="${flt===c[0]?'on':''}">${c[1]}</button>`).join('')}<button class="vt" data-act="sort" aria-label="Sort order">${SLAB[srt]||'A\u2013Z'}</button><button class="vt" data-act="vt" aria-label="Switch view">${vIcon()}</button></div><div id="list"></div>`;
     list();
-  }else if(view==='add'){
-    m.innerHTML=`<div class="card"><h2>Add a book</h2>
-    <div class="bar"><button class="p" data-act="scanisbn">Scan barcode</button></div>
-    <div class="f"><input id="isbn" placeholder="ISBN (optional)" value="${esc(draft.isbn||'')}"><button data-act="mic" data-id="isbn" data-d="1" aria-label="Speak the ISBN">Speak</button></div>
-    <button data-act="look" style="margin:0 0 14px">Look up details from ISBN</button>
-    <div class="f"><input id="ti" placeholder="Title" value="${esc(draft.title||'')}"><button data-act="mic" data-id="ti" aria-label="Speak the title">Speak</button></div>
-    <div class="f"><input id="au" placeholder="Author" value="${esc(draft.author||'')}"><button data-act="mic" data-id="au" aria-label="Speak the author">Speak</button></div>
-    <textarea id="no" rows="2" placeholder="Notes (optional)">${esc(draft.notes||'')}</textarea>
-    <button class="p" data-act="addman" style="width:100%">Add to library</button></div>`;
-  }else{
-    m.innerHTML=`<div class="bar"><button class="p" data-act="newg">New group</button><button data-act="scanqr">Scan group QR</button></div>`+
-    (S.groups.length?S.groups.map(g=>{const bs=g.ids.map(i=>S.books.find(b=>b.id===i)).filter(Boolean);const o=bs.filter(b=>b.out).length;
-      return `<div class="row" data-act="grp" data-id="${g.id}"><div class="mt"><b>${esc(g.name)}</b><span>${bs.length} books · ${o} out</span></div></div>`}).join(''):
-    `<div class="empty">No groups yet. Make one for a shelf, box or room, then print its QR code.</div>`);
-  }
+  }else if(view==='add')addView();
+  else grpView();
 }
+const bkImg=b=>{const i=toIsbn(b.isbn)||b.isbn,u=b.cover||(i?'https://covers.openlibrary.org/b/isbn/'+i+'-M.jpg?default=false':'');return u?`<img src="${esc(u)}" alt="" onerror="this.remove()">`:''};
+function rowExtra(b){const x=[];if(beta('showprice')&&b.msrp!=null)x.push(money(b.msrp,b.cur));if(beta('showisbn')&&b.isbn)x.push(b.isbn);return x.length?`<span class="x">${esc(x.join(' \u00b7 '))}</span>`:''}
 function list(){
   const k=q.toLowerCase(),L=$('#list');
   const bs=S.books.filter(b=>(flt==='all'||(flt==='out')===!!b.out)&&(b.title+' '+b.author+' '+b.isbn+' '+(b.holder||'')+' '+(b.notes||'')).toLowerCase().includes(k)).sort(SORTS[srt]||SORTS.title);
   if(!bs.length){L.className='';L.innerHTML=`<div class="empty">${S.books.length?'No books match.':'Your library is empty. Tap Add book to scan or type one in.'}</div>`;return}
   if(vw==='grid'){L.className='gr';L.innerHTML=bs.map(b=>`<div class="gt" data-act="covers" data-id="${b.id}">${cover(b)}<button class="gd${b.out?' o':''}" data-act="tog" data-id="${b.id}" aria-label="${b.out?'Out of storage':'In storage'}. Tap to change"></button></div>`).join('')}
-  else{L.className='';L.innerHTML=bs.map(b=>`<div class="row" data-act="edit" data-id="${b.id}">${cover(b,1)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'Unknown author')}${b.out&&b.holder?' \u00b7 with '+esc(b.holder):''}</span></div>${heart(b)}${dot(b)}</div>`).join('')}
+  else{L.className='';L.innerHTML=bs.map(b=>`<div class="sw" data-id="${b.id}"><div class="swf">${HEARTW}</div><div class="swr"><button class="sc" data-act="swgrp" data-id="${b.id}"><span class="ci b">${FOLDER}</span><small>Group</small></button><button class="sc" data-act="swdel" data-id="${b.id}"><span class="ci r">${TRASH}</span><small>Delete</small></button><span class="tr">${TRASH}</span></div><div class="row${b.fav?' fv':''}" data-act="edit" data-id="${b.id}">${cover(b,1)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'Unknown author')}${beta('holder')&&b.out&&b.holder?' \u00b7 with '+esc(b.holder):''}</span>${rowExtra(b)}</div>${dot(b)}</div></div>`).join('')}
 }
 
 async function lookup(isbn){
+  const w=await api('/api/book/'+isbn);
+  if(w&&w.title)return{title:w.title,author:w.author||'',cover:'',pub:w.pub,date:w.date,pages:w.pages,lang:w.lang,bind:w.bind,msrp:w.msrp,cur:w.msrp!=null?'USD':undefined,syn:w.syn,subj:w.subj,dewey:w.dewey};
   try{const r=await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);const j=await r.json();const d=j['ISBN:'+isbn];
     if(d)return{title:d.title+(d.subtitle?': '+d.subtitle:''),author:(d.authors||[]).map(a=>a.name).join(', '),cover:(d.cover&&d.cover.medium)||''}}catch(e){}
   try{const r=await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);const j=await r.json();const v=j.items&&j.items[0]&&j.items[0].volumeInfo;
@@ -178,35 +260,76 @@ async function lookup(isbn){
 }
 function addBook(o){
   o.isbn=toIsbn(o.isbn||'')||o.isbn||'';
-  if(o.isbn&&S.books.some(b=>(toIsbn(b.isbn)||b.isbn)===o.isbn)){toast('Already in your library');return false}
-  const nb={id:uid(),title:o.title,author:o.author||'',isbn:o.isbn||'',cover:o.cover||'',notes:o.notes||'',out:false,outs:0,added:Date.now(),since:Date.now()};S.books.push(nb);
-  save();return nb;
+  if(o.isbn&&!toIsbn(o.isbn)){o.ean=o.ean||o.isbn;o.isbn=''}
+  if((o.isbn&&S.books.some(b=>(toIsbn(b.isbn)||b.isbn)===o.isbn))||(o.ean&&S.books.some(b=>b.ean===o.ean))){toast('Already in your library');return false}
+  const nb={id:uid(),title:o.title,author:o.author||'',isbn:o.isbn||'',cover:o.cover||'',notes:o.notes||'',out:false,outs:0,added:Date.now(),since:Date.now()};
+  ['pub','date','pages','lang','bind','msrp','cur','syn','subj','dewey','ean'].forEach(k=>{if(o[k]!=null&&o[k]!=='')nb[k]=o[k]});
+  if(nb.msrp!=null&&!nb.cur)nb.cur='USD';
+  if(beta('dupwarn')&&S.books.some(b=>nrm(b.title)===nrm(nb.title)))toast('Heads up: you may already own another edition');
+  S.books.push(nb);save();return nb;
 }
-async function isbnAdd(isbn,keep){
-  if(scanG)return addToGroup(isbn);
-  toast('Looking up '+isbn+'…');
+async function isbnAdd(isbn,keep,ex){
+  if(scanG)return addToGroup(isbn,ex);
+  toast('Looking up '+isbn+'\u2026');
   const d=await lookup(isbn)||await lookupBC(isbn);
-  if(d&&addBook({...d,isbn})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
+  const extra=ex&&ex.msrp!=null?{msrp:ex.msrp,cur:ex.cur}:{};
+  if(d&&addBook({...d,isbn,...extra})){toast('Added: '+d.title);ding();if(keep)bump();else{view='lib';render()}}
   else if(!d){
-    if(keep){addBook({title:'Unknown book '+isbn,isbn});toast('Not found. Saved as Unknown book so you can edit it later.');bump()}
-    else{draft={isbn};view='add';render();toast('Not found. Type the title in.')}
+    if(keep){addBook({title:'Unknown book '+isbn,isbn,...extra});toast('Not found. Saved as Unknown book so you can edit it later.');bump()}
+    else{draft={isbn,...extra};addTab='type';view='add';render();toast('Not found. Type the title in.')}
   }
 }
 const scs=t=>{const e=$('#scs');if(e)e.textContent=t};
+let lock=null,lcur=null,wl=null;
+function setLock(box,label){if(box)lock={...box,label,t:performance.now()}}
+function barMeta(r){
+  let box=null,label='',ext=null;
+  try{const p=r.getResultPoints()||[];if(p.length){const xs=p.map(q=>q.getX()),ys=p.map(q=>q.getY());let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);if(y1-y0<12){const h=(x1-x0)*.28;y0-=h;y1+=h}box={x0,y0,x1,y1}}}catch(e){}
+  try{const md=r.getResultMetadata&&r.getResultMetadata(),E=md&&md.get(ZXing.ResultMetadataType.UPC_EAN_EXTENSION);if(E)ext=String(E)}catch(e){}
+  try{const f=String(ZXing.BarcodeFormat[r.getBarcodeFormat()]||'').replace(/_/g,'-'),t=r.getText();label=(/^EAN-13$/.test(f)?codeKind(t):f)+' \u00b7 '+t+(ext?' + '+ext:'')}catch(e){}
+  return{box,label,ext};
+}
+function lockLoop(){
+  const cv=$('#scv'),v=$('#v');if(!cv||!v)return;
+  const W=cv.clientWidth,H=cv.clientHeight,dpr=window.devicePixelRatio||1;
+  if(cv.width!==Math.round(W*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+  const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
+  const now=performance.now(),vw=v.videoWidth,vh=v.videoHeight,on=!!(lock&&vw&&now-lock.t<900);
+  let tg={x:W*.07,y:H*.33,w:W*.86,h:H*.27};
+  if(on){const sc=Math.max(W/vw,H/vh),ox=(W-vw*sc)/2,oy=(H-vh*sc)/2,pd=16;tg={x:lock.x0*sc+ox-pd,y:lock.y0*sc+oy-pd,w:(lock.x1-lock.x0)*sc+pd*2,h:(lock.y1-lock.y0)*sc+pd*2}}
+  if(!lcur)lcur={...tg};
+  for(const k of['x','y','w','h'])lcur[k]+=(tg[k]-lcur[k])*.25;
+  const r=lcur;
+  x.fillStyle=on?'rgba(0,0,0,.4)':'rgba(0,0,0,.22)';x.fillRect(0,0,W,H);x.clearRect(r.x,r.y,r.w,r.h);
+  const L=Math.min(r.w,r.h)*.2+8;
+  x.lineWidth=4;x.lineCap='round';x.strokeStyle=on?'#2ee59d':'#fff';x.shadowColor=on?'rgba(46,229,157,.9)':'transparent';x.shadowBlur=on?16:0;
+  [[r.x,r.y,1,1],[r.x+r.w,r.y,-1,1],[r.x,r.y+r.h,1,-1],[r.x+r.w,r.y+r.h,-1,-1]].forEach(([cx,cy,dx,dy])=>{x.beginPath();x.moveTo(cx,cy+dy*L);x.lineTo(cx,cy);x.lineTo(cx+dx*L,cy);x.stroke()});
+  x.shadowBlur=0;
+  if(!on){const t=(Math.sin(now/450)+1)/2;x.fillStyle='rgba(255,70,70,.8)';x.fillRect(r.x+10,r.y+10+t*(r.h-24),r.w-20,2)}
+  else if(lock.label){x.font='600 14px -apple-system,sans-serif';const tw=x.measureText(lock.label).width+22,cx=Math.max(8,Math.min(W-tw-8,r.x+r.w/2-tw/2)),cy=Math.max(70,r.y-36);x.fillStyle='rgba(20,160,110,.95)';rr(x,cx,cy,tw,28,14);x.fill();x.fillStyle='#fff';x.fillText(lock.label,cx+11,cy+19)}
+  requestAnimationFrame(lockLoop);
+}
 function scan(cb,multi,ocr){
   if(!navigator.mediaDevices||!window.ZXing){toast('Camera not available. Allow camera access, or type or speak the ISBN.');return}
-  closeM();
+  closeM();audioInit();
   const o=document.createElement('div');o.id='sc';
-  o.innerHTML=`<video id="v" playsinline muted></video><div id="sct"><button data-act="close">Done</button>${ocr?`<button id="scc" data-act="cont" class="${cont?'on':''}" aria-pressed="${cont}" title="Continuous scan ${cont?'on':'off'}">${cIcon()}</button>`:''}<span id="scs">${ocr?(cont?'Continuous scan on. Show an ISBN or barcode':'Show the printed ISBN or the barcode'):'Point at the QR code'}</span></div>`;
-  document.body.appendChild(o);document.body.classList.add('scn');
-  rd=new ZXing.BrowserMultiFormatReader();
-  rd.decodeFromConstraints({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}},'v',r=>{if(r){const t=r.getText();if(multi){if(cb(t,'bc'))closeM()}else{closeM();cb(t)}}}).catch(()=>{closeM();toast('Camera blocked. Allow camera access, or type or speak the ISBN.')});
+  o.innerHTML=`<video id="v" playsinline muted></video><canvas id="scv"></canvas><div id="sct"><button data-act="close">Done</button>${ocr?`<button id="scc" data-act="cont" class="${cont?'on':''}" aria-pressed="${cont}" title="Continuous scan ${cont?'on':'off'}">${cIcon()}</button>`:''}</div><div id="scb"><b>${ocr?'Scan the barcode or printed ISBN':'Scan the QR code'}</b><span id="scs">${ocr?(cont?'Continuous scan on. Show an ISBN or barcode':'Hold the book steady. Price add-on is read too'):'Point at the QR code'}</span></div>`;
+  document.body.appendChild(o);document.body.classList.add('scn');lock=null;lcur=null;
+  rd=new ZXing.BrowserMultiFormatReader();let done=0;
+  rd.decodeFromConstraints({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}},'v',r=>{
+    if(!r||done)return;
+    const t=r.getText(),m=barMeta(r);setLock(m.box,m.label);
+    if(multi){if(cb(t,'bc',m))closeM()}
+    else{done=1;setTimeout(()=>{closeM();cb(t)},450)}
+  }).catch(()=>{closeM();toast('Camera blocked. Allow camera access, or type or speak the ISBN.')});
+  lockLoop();
+  if(beta('wake')&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>wl=l).catch(()=>{});
   if(ocr)setTimeout(()=>ocrLoop(cb),700);
 }
 async function ocrLoop(cb){
   if(!$('#sc'))return;ocrOn=true;const v=$('#v');
   try{
-    if(!window.Tesseract){scs('Loading text reader…');await loadJS('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')}
+    if(!window.Tesseract){scs('Loading text reader\u2026');await loadJS('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')}
     if(!tess){tess=await Tesseract.createWorker('eng');await tess.setParameters({tessedit_pageseg_mode:'11'})}
   }catch(e){ocrOn=false;scs('Text reader unavailable. Scanning barcode only.');cb('','noocr');return}
   const c=document.createElement('canvas'),x=c.getContext('2d');let n=0;
@@ -214,8 +337,13 @@ async function ocrLoop(cb){
     if(v&&v.videoWidth){
       const k=Math.min(1,1600/v.videoWidth);c.width=v.videoWidth*k;c.height=v.videoHeight*k;
       if(n%2){x.save();x.translate(c.width,c.height);x.rotate(Math.PI);x.drawImage(v,0,0,c.width,c.height);x.restore()}else x.drawImage(v,0,0,c.width,c.height);
-      scs(scanN?'Added '+scanN+'. Reading the next ISBN…':'Reading the ISBN…');
-      try{const r=await tess.recognize(c);if(!ocrOn)break;if(cb(r.data.text,'ocr')){closeM();break}}catch(e){}
+      scs(scanN?'Added '+scanN+'. Reading the next ISBN\u2026':'Reading the printed ISBN\u2026');
+      try{
+        const r=await tess.recognize(c);if(!ocrOn)break;
+        let box=null;const ln=(r.data.lines||[]).find(l=>ocrIsbn(l.text));
+        if(ln&&ln.bbox){let{x0,y0,x1,y1}=ln.bbox;if(n%2){[x0,x1]=[c.width-x1,c.width-x0];[y0,y1]=[c.height-y1,c.height-y0]}box={x0:x0/k,y0:y0/k,x1:x1/k,y1:y1/k}}
+        if(cb(r.data.text,'ocr',{box})){closeM();break}
+      }catch(e){}
       n++;
     }
     await new Promise(r=>setTimeout(r,200));
@@ -235,7 +363,7 @@ function showQR(id){
   const g=S.groups.find(x=>x.id===id);if(!g)return;
   const txt='g:'+encodeURIComponent(g.name.replace(/\|/g,' '))+'|~'+g.id;
   const base=S.url||(location.protocol.startsWith('http')?location.origin+location.pathname:'');
-  const link=base?base+'#'+txt:'shortcuts://run-shortcut?name=Bookshelf&input=text&text='+encodeURIComponent(txt);
+  const link=base?base+'#/group/'+g.id:'shortcuts://run-shortcut?name=Bookshelf&input=text&text='+encodeURIComponent(txt);
   let c;
   try{c=qrCanvas(link,g.name)}catch(e){toast('Too many books for one QR. Split the group.');return}
   const url=c.toDataURL('image/png');
@@ -255,7 +383,7 @@ function showGroup(id){
   const g=S.groups.find(x=>x.id===id);if(!g)return closeM();
   reopen=()=>showGroup(id);
   const bs=g.ids.map(i=>S.books.find(b=>b.id===i)).filter(Boolean);
-  modal(`<h2>${esc(g.name)}</h2>${bs.length?bs.map(b=>`<div class="row" style="cursor:default">${cover(b)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author)}</span></div>${dot(b)}</div>`).join(''):'<div class="empty">No books in this group.</div>'}
+  modal(`<h2>${esc(g.name)}</h2>${bs.length?bs.map(b=>`<div class="row" style="cursor:default">${cover(b,1,id)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author)}</span></div>${dot(b)}</div>`).join(''):'<div class="empty">No books in this group.</div>'}
   <div class="bar"><button class="p" data-act="qr" data-id="${id}">Make QR code</button><button data-act="editg" data-id="${id}">Edit</button></div>
   <div class="bar"><button data-act="close">Close</button></div>`);
 }
@@ -267,41 +395,42 @@ function showShared(p){
   <div class="bar"><button data-act="close">Close</button></div>`);
 }
 function openHash(h){
-  h=h||'';let m=h.match(/^#?g:(.*)\|([^|]*)$/);
+  h=h||'';let m=h.match(/^#?\/@([\w.-]+)(?:\/(favorites|wishlist|book|wish)(?:\/([\w-]+))?)?\/?$/);
+  if(m){openPage(m[1],m[2]||'',m[3]||'');return true}
+  m=h.match(/^#?\/group\/([\w-]+)$/);if(m){if(S.groups.some(x=>x.id===m[1]))showGroup(m[1]);else toast('That group is not in this library');return true}
+  m=h.match(/^#?g:(.*)\|([^|]*)$/);
   if(m){try{const name=decodeURIComponent(m[1]),ids=m[2]?m[2].split(','):[];
     let g=ids[0]&&ids[0][0]==='~'?S.groups.find(x=>x.id===ids[0].slice(1)):null;
     g=g||S.groups.find(x=>x.name.toLowerCase()===name.toLowerCase());
     if(!g){const sc=S.groups.map(x=>[x,x.ids.filter(i=>ids.includes(i)).length]).filter(a=>a[1]).sort((a,b)=>b[1]-a[1]);g=sc[0]&&sc[0][0]}
     if(g)showGroup(g.id);else showShared({n:name,b:ids.filter(i=>i[0]!=='~')});return true}catch(e){return false}}
-  m=h.match(/^#?s=([\w-]+)$/);if(m){openShare(m[1]);return true}
   m=h.match(/^#?(\d{10,13})$/);if(m){isbnAdd(m[1]);return true}
   m=h.match(/#g=(.+)$/);if(!m)return false;
   try{showShared(JSON.parse(decodeURIComponent(escape(atob(m[1])))));return true}catch(e){toast('That QR code could not be read');return false}
 }
 function groupForm(id){
-  const g=S.groups.find(x=>x.id===id)||{name:'',ids:[]};
-  modal(`<h2>${id?'Edit group':'New group'}</h2><input id="gn" placeholder="Group name (e.g. Garage box 2)" value="${esc(g.name)}">
-  <button class="p" data-act="scang" data-id="${id||''}" style="width:100%;margin:0 0 12px">Scan books into this group</button>
-  <div style="margin:0 0 14px">${S.books.length?S.books.map(b=>`<label class="ck"><input type="checkbox" value="${b.id}" ${g.ids.includes(b.id)?'checked':''}><span>${esc(b.title)}</span></label>`).join(''):'<p class="mut">Add some books first.</p>'}</div>
+  const g=S.groups.find(x=>x.id===id)||{name:'',ids:[],color:0},bs=[...S.books].sort((a,b)=>a.title.localeCompare(b.title));
+  modal(`<h2>${id?'Edit group':'New group'}</h2>
+  <input id="gn" placeholder="Group name (e.g. Garage box 2)" value="${esc(g.name)}" style="font-size:18px;font-weight:600">
+  <div class="sws">${GC.map((c,i)=>`<i data-act="gcol" data-i="${i}" class="${(g.color||0)===i?'on':''}" style="background:${c}"></i>`).join('')}</div>
+  <button class="hero" data-act="scang" data-id="${id||''}" style="padding:14px;margin:0 0 14px">${scanIcon(28)}<div><b>Scan books into this group</b><span>Books you already own are only added to the group</span></div></button>
+  <div class="f s2"><input id="pks" type="search" placeholder="Search your books"><button id="pkn" disabled style="min-width:96px">${g.ids.length} selected</button></div>
+  <div class="pkg">${bs.length?bs.map(b=>`<div class="pkt${g.ids.includes(b.id)?' on':''}" data-act="pk" data-id="${b.id}" data-q="${esc((b.title+' '+(b.author||'')).toLowerCase())}">${cover(b)}<span class="k2">${CHECK}</span><div class="cap">${esc(b.title)}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Add some books first.</div>'}</div>
   <div class="bar"><button class="p" data-act="saveg" data-id="${id||''}">Save group</button><button data-act="close">Cancel</button></div>
   ${id?`<button class="d" data-act="delg" data-id="${id}" style="width:100%">Delete group</button>`:''}`);
 }
 function editBook(id){
   const b=S.books.find(x=>x.id===id);if(!b)return;
-  modal(`<h2>Edit book</h2><input id="ti" value="${esc(b.title)}" placeholder="Title"><input id="au" value="${esc(b.author)}" placeholder="Author"><input id="isbn" value="${esc(b.isbn)}" placeholder="ISBN"><input id="hd" placeholder="Who has it, or where it is (when out)" value="${esc(b.holder||'')}"><textarea id="no" rows="2" placeholder="Notes">${esc(b.notes)}</textarea>
-  <div class="bar"><button data-act="fav" data-id="${id}">${b.fav?'Remove favorite':'Add to favorites'}</button><button data-act="shbook" data-id="${id}">Share</button></div>
+  const info=[['Publisher',b.pub],['Published',b.date],['Pages',b.pages],['Format',b.bind],['Language',b.lang],['Dewey',Array.isArray(b.dewey)?b.dewey.join(', '):b.dewey],['EAN',b.ean],['Subjects',Array.isArray(b.subj)?b.subj.slice(0,6).join(', '):b.subj]].filter(x=>x[1]);
+  modal(`<h2>Edit book</h2>
+  <input id="ti" value="${esc(b.title)}" placeholder="Title"><input id="au" value="${esc(b.author)}" placeholder="Author">
+  <div class="two"><input id="isbn" value="${esc(b.isbn)}" placeholder="ISBN"><input id="mp" inputmode="decimal" value="${b.msrp!=null?b.msrp:''}" placeholder="MSRP"></div>
+  ${beta('holder')?`<input id="hd" placeholder="Who has it, or where it is (when out)" value="${esc(b.holder||'')}">`:''}
+  <textarea id="no" rows="2" placeholder="Notes">${esc(b.notes)}</textarea>
+  ${info.length||b.syn?`<details class="card" style="padding:12px;margin:0 0 12px"><summary style="font-weight:600;cursor:pointer">Book info</summary>${info.map(x=>`<div class="mut" style="margin-top:8px"><b style="color:var(--ink)">${x[0]}:</b> ${esc(x[1])}</div>`).join('')}${b.syn?`<p class="mut" style="margin:10px 0 0">${esc(String(b.syn).replace(/<[^>]*>/g,'').slice(0,600))}</p>`:''}</details>`:''}
+  <div class="bar"><button data-act="fav" data-id="${id}">${b.fav?'Remove favorite':'Add to favorites'}</button><button data-act="swgrp" data-id="${id}">Groups</button><button data-act="shbook" data-id="${id}">Share</button></div>
   <div class="bar"><button class="p" data-act="saveb" data-id="${id}">Save changes</button><button data-act="close">Cancel</button></div>
   <button class="d" data-act="delb" data-id="${id}" style="width:100%">Delete book</button>`);
-}
-function settings(){
-  modal(`<h2>Settings</h2><p class="mut">${S.books.length} books, ${S.groups.length} groups.</p>
-  <label class="ck"><input type="checkbox" id="cont" ${cont?'checked':''}><span>Continuous scan: keep the camera open and add one book after another</span></label>
-  <label class="mut">Page link used in QR codes (optional)</label><input id="url" placeholder="https://… link to this page" value="${esc(S.url)}">
-  <div class="bar"><button class="p" data-act="saveu">Save link</button></div>
-  <div class="bar"><button data-act="exp">Back up to file</button><button data-act="imp">Restore backup</button></div>
-  <input id="f" type="file" accept="application/json" style="display:none">
-  <button data-act="close" style="width:100%">Close</button>`);
-  $('#f').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.books)||!Array.isArray(d.groups))throw 0;S=Object.assign({url:S.url},d);save();closeM();render();toast('Backup restored')}catch(x){toast('That file is not a Bookshelf backup')}};r.readAsText(f)};
 }
 
 
@@ -326,40 +455,35 @@ const cIcon=()=>`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="tr
 function updC(){const b=$('#scc');if(!b)return;b.innerHTML=cIcon();b.classList.toggle('on',cont);b.setAttribute('aria-pressed',cont);b.title='Continuous scan '+(cont?'on':'off');scs(cont?'Continuous scan on. Scan the next book':'Continuous scan off')}
 const bump=()=>{scanN++;ding();scs('Added '+scanN+(scanN>1?' books':' book')+'. Scan the next one');render()};
 function scanBook(){
-  scanN=0;lastI='';let t0=Date.now(),ocrOK=true,tries=0,bcI='',bcO='';
+  scanN=0;lastI='';let t0=Date.now(),ocrOK=true,tries=0,bcI='',bcO='',ext=null,pr=null,fin=0;
+  const price=()=>{const e=ean5(ext);if(e)return e;if(pr!=null&&beta('ocrprice'))return{msrp:pr,cur:'USD'};return null};
   const take=(i,fn)=>{
-    if(cont){
-      if(i===lastI&&Date.now()-lastT<5000)return false;
-      lastI=i;lastT=Date.now();pauseT=Date.now()+1500;t0=Date.now();tries=0;bcI='';bcO='';fn(i);return false;
-    }
-    fn(i);return true;
+    if(cont){if(i===lastI&&Date.now()-lastT<5000)return false;lastI=i;lastT=Date.now();pauseT=Date.now()+1500;const ex=price();t0=Date.now();tries=0;bcI='';bcO='';ext=null;pr=null;fn(i,ex);return false}
+    fin=1;const ex=price();setTimeout(()=>{fn(i,ex);closeM()},450);return false;
   };
-  scan((t,k)=>{
-    if(Date.now()<pauseT)return false;
+  scan((t,k,m)=>{
+    if(fin||Date.now()<pauseT)return false;
     const el=Date.now()-t0;
     if(k==='noocr')ocrOK=false;
-    else if(k==='ocr'){tries++;const f=ocrIsbn(t);if(f)return take(f,i=>isbnAdd(i,cont))}
-    else{const i=toIsbn(t);if(i)bcI=i;else if(!bcO&&/^\d{8,14}$/.test(t))bcO=t}
-    if(bcI&&(!ocrOK||tries>=2||el>(tries?7000:3500)))return take(bcI,i=>isbnAdd(i,cont));
-    if(!bcI&&bcO&&(!ocrOK||tries>=4||el>9000))return take(bcO,c=>useBarcode(c,cont));
+    else if(k==='ocr'){tries++;const f=ocrIsbn(t);if(pr==null){const q=ocrPrice(t);if(q!=null)pr=q}if(f){if(m&&m.box)setLock(m.box,'ISBN '+f);return take(f,(i,ex)=>isbnAdd(i,cont,ex))}}
+    else{if(m&&m.ext)ext=m.ext;const i=toIsbn(t);if(i)bcI=i;else if(!bcO&&/^\d{8,14}$/.test(t))bcO=t}
+    if(bcI&&(!ocrOK||tries>=2||el>(tries?7000:3500)))return take(bcI,(i,ex)=>isbnAdd(i,cont,ex));
+    if(!bcI&&bcO&&(!ocrOK||tries>=4||el>9000))return take(bcO,(c,ex)=>useBarcode(c,cont,ex));
     return false;
   },true,true);
 }
-async function useBarcode(c,keep){
-  if(scanG)return addToGroup(c);
-  toast('No ISBN found. Trying barcode '+c+'…');
+async function useBarcode(c,keep,ex){
+  if(scanG)return addToGroup(c,ex);
+  toast(codeKind(c)+' '+c+' \u2013 looking it up\u2026');
   const d=await lookup(c)||await lookupBC(c);
-  if(d&&addBook({...d,isbn:d.isbn||c})){toast('Added: '+d.title);if(keep)bump();else{view='lib';render()}}
+  const extra=ex&&ex.msrp!=null?{msrp:ex.msrp,cur:ex.cur}:{};
+  if(d&&addBook({...d,isbn:d.isbn||c,ean:toIsbn(c)?undefined:c,...extra})){toast('Added: '+d.title);ding();if(keep)bump();else{view='lib';render()}}
   else if(!d){
-    if(keep){addBook({title:'Unknown book '+c,isbn:c});toast('No match. Saved as Unknown book so you can edit it later.');bump()}
-    else{draft={isbn:c};view='add';render();toast('No match for that barcode. Type the title in.')}
+    if(keep){addBook({title:'Unknown book '+c,isbn:c,...extra});toast('No match. Saved as Unknown book so you can edit it later.');bump()}
+    else{draft={isbn:c,...extra};addTab='type';view='add';render();toast('No match for that barcode. Type the title in.')}
   }
 }
-function doLook(){
-  const i=(x=>toIsbn(x)||x)($('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase());if(!i)return toast('Enter an ISBN first');
-  draft={isbn:i,title:$('#ti').value,author:$('#au').value,notes:$('#no').value};toast('Looking up…');
-  lookup(i).then(d=>d||lookupBC(i)).then(d=>{if(d)draft={...draft,...d,isbn:i};else toast('No match. Type the details in.');render()});
-}
+function doLook(){typeLook()}
 const NW={zero:0,oh:0,o:0,one:1,won:1,two:2,to:2,too:2,three:3,tree:3,four:4,for:4,fore:4,five:5,six:6,seven:7,eight:8,ate:8,nine:9,x:'X',ex:'X',eks:'X'};
 function parseSpoken(t){
   const w=String(t).toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean);let out='';
@@ -451,11 +575,11 @@ function acctModal(){
 
 /* ---- scan straight into a group ---- */
 let scanG=null,scanDone=null,cv=null;
-async function addToGroup(code){
+async function addToGroup(code,ex){
   const g=S.groups.find(x=>x.id===scanG);if(!g)return;
   const k=toIsbn(code)||code;
-  let b=S.books.find(x=>(toIsbn(x.isbn)||x.isbn)===k);
-  if(!b){toast('Not in your library yet. Looking up '+k+'…');const d=await lookup(k)||await lookupBC(k);b=addBook({...(d||{title:'Unknown book '+k}),isbn:k})}
+  let b=S.books.find(x=>(toIsbn(x.isbn)||x.isbn)===k||x.ean===k);
+  if(!b){toast('Not in your library yet. Looking up '+k+'\u2026');const d=await lookup(k)||await lookupBC(k);const extra=ex&&ex.msrp!=null?{msrp:ex.msrp,cur:ex.cur}:{};b=addBook({...(d||{title:'Unknown book '+k}),isbn:k,...extra})}
   if(!b)return;
   if(g.ids.includes(b.id)){toast('Already in '+g.name+': '+b.title);return}
   g.ids.push(b.id);save();scanN++;ding();toast('Added to '+g.name+': '+b.title);scs('Added '+scanN+' to '+g.name+'. Scan the next one');
@@ -502,13 +626,14 @@ function selCov(i){
 function showCovers(id,keep,nearest){
   const b=S.books.find(x=>x.id===id);if(!b)return;
   if(!cv||cv.id!==id)cv={id,sel:'',arr:[],busy:0};
-  const{cur,arr}=coverList(b),selU=cv.sel||cur||arr[0]||'',used=ck(defCover(b));
+  const{cur,arr}=coverList(b),selU=cv.sel||cur||arr[0]||'',used=ck(defCover(b)),ld=(!b.alts||b.altsV!==3),fresh=cv.fresh;cv.fresh=0;
   cv.arr=arr;cv.sel=selU;
   const si=arr.findIndex(u=>ck(u)===ck(selU));
-  modal(`<h2>Choose a cover</h2><p class="mut" style="margin:-6px 0 0">${esc(b.title)}</p>
-  <div id="cvs" class="cvs${arr.length<2?' two':''}">${arr.map((u,i)=>`<div class="cp${i===si?' sel':''}" data-act="pick" data-i="${i}" style="background:hsl(${hue(b.title||'?')} 38% 36%)"><span>${esc((b.title||'?')[0].toUpperCase())}</span><img src="${esc(u)}" alt="" onerror="this.remove()">${ck(u)===used?'<i class="bd">In use</i>':''}</div>`).join('')}<div class="cp add" data-act="addcov" role="button" aria-label="Add your own cover photo">+</div></div>
+  modal(`<h2>Choose a cover</h2><p class="mut" style="margin:-6px 0 8px">${esc(b.title)}</p>${ld?'<div class="ldb"><i></i></div>':''}
+  <div id="cvs" class="cvs${arr.length<2&&!ld?' two':''}">${arr.map((u,i)=>`<div class="cp${i===si?' sel':''}${fresh&&i!==si?' in':''}" data-act="pick" data-i="${i}" style="--i:${i};background:hsl(${hue(b.title||'?')} 38% 36%)"><span>${esc((b.title||'?')[0].toUpperCase())}</span><img src="${esc(u)}" alt="" onerror="this.remove()">${ck(u)===used?'<i class="bd">In use</i>':''}</div>`).join('')}${ld?'<div class="cp sk shm"></div><div class="cp sk shm"></div>':''}<div class="cp add" data-act="addcov" role="button" aria-label="Add your own cover photo">+</div></div>
+  <p class="mut" style="text-align:center;margin:-6px 0 8px;min-height:18px;font-size:13px">${ld?'Finding more covers\u2026':(arr.length>1?arr.length+' covers found':'No other covers found')}</p>
   <input id="cvf" type="file" accept="image/*" style="display:none">
-  <div class="bar"><button class="p" data-act="usecov">Use this cover</button><button id="cvdel" class="d" data-act="delcov" style="display:none">Delete photo</button><button data-act="edit" data-id="${id}">Details</button><button data-act="close">Close</button></div>`);
+  <div class="bar"><button class="p" data-act="usecov">Use this cover</button><button id="cvdel" class="d" data-act="delcov" style="display:none">Delete photo</button><button data-act="edit" data-id="${id}">Details</button><button data-act="cvclose">Close</button></div>`);
   setTimeout(()=>{
     const c=$('#cvs');if(!c)return;
     if(keep===undefined)centerSel(true);
@@ -519,7 +644,7 @@ function showCovers(id,keep,nearest){
     }
     updDel();
   },30);
-  if((!b.alts||b.altsV!==3)&&!cv.busy){cv.busy=1;fetchAlts(b).then(a=>{b.alts=a;b.altsV=3;save();if(cv)cv.busy=0;const c=$('#cvs');if(cv&&cv.id===id&&c)showCovers(id,c.scrollLeft)})}
+  if(ld&&!cv.busy){cv.busy=1;fetchAlts(b).then(a=>{b.alts=a;b.altsV=3;save();if(cv){cv.busy=0;cv.fresh=1}const c=$('#cvs');if(cv&&cv.id===id&&c)showCovers(id,c.scrollLeft)})}
 }
 function addPhoto(f){
   if(!cv)return;const b=S.books.find(x=>x.id===cv.id);if(!b)return;
@@ -573,7 +698,7 @@ function fixMeta(){let c=0;S.books.forEach(b=>{if(!b.since){b.since=b.added||Dat
 const dur=ms=>{const m=ms/6e4,h=m/60,d=Math.floor(h/24);return d>=1?d+(d===1?' day':' days'):h>=1?Math.floor(h)+' hr':Math.max(1,Math.floor(m))+' min'};
 const bkCover=b=>{const u=defCover(b);return u&&!u.startsWith('data:')?u:''};
 const wCov=w=>w.cover&&!w.cover.startsWith('data:')?w.cover:(w.isbn?'https://covers.openlibrary.org/b/isbn/'+w.isbn+'-M.jpg?default=false':'');
-const myNums=()=>({outs:S.books.reduce((n,b)=>n+(b.outs||0),0),books:S.books.length,out:S.books.filter(b=>b.out).length,groups:S.groups.length,wish:(S.wish||[]).length,favs:S.books.filter(b=>b.fav).length});
+const myNums=()=>({val:beta('value')?S.books.reduce((n,b)=>n+(b.msrp||0),0):undefined,outs:S.books.reduce((n,b)=>n+(b.outs||0),0),books:S.books.length,out:S.books.filter(b=>b.out).length,groups:S.groups.length,wish:(S.wish||[]).length,favs:S.books.filter(b=>b.fav).length});
 function statRows(){
   const B=S.books,now=Date.now();
   const top=[...B].sort((a,b)=>(b.outs||0)-(a.outs||0))[0];
@@ -588,39 +713,46 @@ function statRows(){
 }
 const tile=(c,t)=>`<div class="cv" style="background:hsl(${hue(t||'?')} 38% 36%)">${c?`<img src="${esc(c)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}<span>${esc((t||'?')[0].toUpperCase())}</span></div>`;
 const rowsHtml=rs=>rs.map(r=>`<div class="srow">${tile(r.c,r.t)}<div class="mt"><small>${esc(r.k)}</small><b>${esc(r.t)}</b><span>${esc(r.a)}</span>${r.n?`<span>${esc(r.n)}</span>`:''}</div></div>`).join('');
-const numsHtml=n=>`<div class="nums">${[['Books',n.books],['Out',n.out],['Favorites',n.favs],['Wishlist',n.wish],...(n.outs!==undefined?[['Checkouts',n.outs]]:[])].map(x=>`<div><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}</div>`;
+const numsHtml=n=>`<div class="nums">${[['Books',n.books],['Out',n.out],['Favorites',n.favs],['Wishlist',n.wish],...(n.outs!==undefined?[['Checkouts',n.outs]]:[]),...(n.val!==undefined?[['Value',money(n.val)]]:[])].map(x=>`<div><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}</div>`;
 const gridHtml=it=>it.length?`<div class="gr">${it.map(i=>`<div class="gt" style="cursor:default">${tile(i.c,i.t)}${i.o!==undefined?`<span class="gd${i.o?' o':''}"></span>`:''}<div class="cap"><b>${esc(i.t)}</b><span>${esc(i.a)}</span></div></div>`).join('')}</div>`:'<div class="empty">Nothing here yet.</div>';
 
 /* profile modal */
 function bindF(){const f=$('#f');if(f)f.onchange=e=>{const fl=e.target.files[0];if(!fl)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.books)||!Array.isArray(d.groups))throw 0;S=Object.assign({url:S.url},d);save();closeM();render();toast('Backup restored')}catch(x){toast('That file is not a Bookshelf backup')}};r.readAsText(fl)}}
+const GC=['#3a82f7','#22b573','#e5a53a','#e5484d','#a45be0','#14b8c4'];
+const BETAS=[['adapt','Adaptive scaling','Scales the app proportionally to fit small phone screens'],['holder','Who has it','Adds a \u201cwho has it / where it is\u201d field for books that are out'],['ocrprice','Read printed price','Reads a printed price like $39.95 when a barcode has no price add-on'],['dupwarn','Other-edition warning','Warns when you add a book whose title you already own'],['gloss','Glossy covers','Adds a soft shine to book covers'],['showprice','Prices on rows','Shows the MSRP under each book in the list'],['showisbn','ISBNs on rows','Shows the ISBN under each book in the list'],['value','Library value','Adds the total MSRP of your library to your stats'],['wake','Keep screen awake','Stops the screen sleeping while the scanner is open'],['opendetails','Details after adding','Opens the book editor right after a manual add']];
+const swRow=(k,t,d,on,attr)=>`<div class="sr"><div class="mt"><b>${t}</b><span>${d}</span></div><label class="tg"><input type="checkbox" ${attr}="${k}" ${on?'checked':''}><i></i></label></div>`;
+const sgm=(k,o,cur)=>`<div class="sgm">${o.map(x=>`<button data-act="cfgv" data-k="${k}" data-v="${x[0]}" class="${String(cur)===String(x[0])?'on':''}">${x[1]}</button>`).join('')}</div>`;
+function setHtml(){
+  const svc=(n,ok)=>`<div class="sr"><div class="mt"><b>${n}</b></div><span style="color:${ok?'var(--dg)':'var(--mut)'};font-size:14px">${ok?'Connected':'Not set up'}</span></div>`;
+  return `<div class="sg"><h4>Scanning</h4>${swRow('cont','Continuous scan','Keep the camera open and add one book after another',cont,'data-cfg')}${swRow('sound','Scan sound','A short ding when a book is added',cfg.sound,'data-cfg')}${swRow('flash','Scan flash','A green flash when a book is added',cfg.flash,'data-cfg')}<div class="sr"><button data-act="tsound" style="flex:1">Test sound</button></div></div>
+  <div class="sg"><h4>Appearance</h4><div class="sr"><div class="mt"><b>Theme</b></div>${sgm('theme',[['auto','Auto'],['light','Light'],['dark','Dark']],cfg.theme)}</div><div class="sr"><div class="mt"><b>Row size</b></div>${sgm('dense',[[0,'Roomy'],[1,'Compact']],cfg.dense?1:0)}</div>${swRow('outdays','Show time out','Shows how long a book has been out on its status label',cfg.outdays,'data-cfg')}</div>
+  <div class="sg"><h4>Links &amp; services</h4><div class="sr"><input id="url" placeholder="Page link for QR codes (optional)" value="${esc(S.url||'')}"><button data-act="saveu">Save</button></div>${svc('Preview &amp; book data',!!SHARE_WORKER)}${svc('Sync &amp; sign-in',!!fb)}</div>
+  <div class="sg"><h4>Data</h4><div class="sr"><button data-act="exp" style="flex:1">Back up</button><button data-act="imp" style="flex:1">Restore</button><button data-act="csv" style="flex:1">CSV</button></div><input id="f" type="file" accept="application/json" style="display:none"></div>
+  <div class="sg"><h4>Account</h4><div class="sr"><div class="mt"><b>${fb?(user?esc(user.email||'Signed in'):'Guest'):'Offline mode'}</b><span>${fb?(user?'Your library syncs across devices':'Your books stay on this device only'):'Sign-in is not turned on yet'}</span></div>${fb?`<button class="${user?'d':'p'}" data-act="${user?'signout':'acct'}">${user?'Sign out':'Sign in'}</button>`:''}</div></div>
+  <div class="sg"><h4>Developer</h4>${swRow('dev','Developer mode','Unlocks beta features that may change or break',cfg.dev,'data-cfg')}${cfg.dev?BETAS.map(b=>swRow(b[0],b[1],b[2],cfg.beta[b[0]],'data-beta')).join('')+'<div class="sr"><button class="d" data-act="rstcfg" style="flex:1">Reset all settings</button></div>':''}</div>`;
+}
 function ptabHtml(){
-  const p=S.profile||{};
-  if(ptb==='me')return `<div class="pav"><div class="big av">${avHtml()}</div><div><button data-act="avpick">Change photo</button>${p.avatar?'<button class="d" data-act="avrm">Remove photo</button>':''}</div></div>
+  const p=S.profile||{},h=hdl();
+  if(ptb==='me')return `<div class="pfh"><div class="big av" data-act="avpick" style="cursor:pointer" title="Change photo">${avHtml()}</div><div class="fl"><input id="pn" placeholder="Display name" value="${esc(p.name||(user&&user.displayName)||'')}"><div class="hdl"><i>@</i><input id="ph" placeholder="handle" autocapitalize="off" autocorrect="off" spellcheck="false" value="${esc(h)}"><button data-act="hcheck">Check</button></div></div></div>
+    <div id="hmsg" class="mut" style="margin:0 0 8px;min-height:18px;font-size:13px">${h?'Your public address: @'+esc(h):(user?'Pick a handle to share public pages':'Sign in to claim a handle')}</div>
     <input id="avf" type="file" accept="image/*" style="display:none">
-    <input id="pn" placeholder="Display name" value="${esc(p.name||(user&&user.displayName)||'')}">
-    <textarea id="pbio" rows="3" placeholder="Bio">${esc(p.bio||'')}</textarea>
-    <input id="pg" placeholder="Favorite genre" value="${esc(p.genre||'')}">
-    <input id="pl" placeholder="Location (optional)" value="${esc(p.place||'')}">
-    <button class="p" data-act="savep" style="width:100%">Save profile</button>
+    <textarea id="pbio" rows="2" placeholder="Bio">${esc(p.bio||'')}</textarea>
+    <div class="two"><input id="pg" placeholder="Favorite genre" value="${esc(p.genre||'')}"><input id="pl" placeholder="Location" value="${esc(p.place||'')}"></div>
+    <div class="two"><button class="p" data-act="savep">Save profile</button>${p.avatar?'<button class="d" data-act="avrm">Remove photo</button>':''}</div>
     ${numsHtml(myNums())}${rowsHtml(statRows())}`;
   if(ptb==='favs'){const f=S.books.filter(b=>b.fav).sort((a,b)=>a.title.localeCompare(b.title));
-    return f.length?f.map(b=>`<div class="row" style="cursor:default">${cover(b)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'')}</span></div>${heart(b)}${dot(b)}</div>`).join(''):'<div class="empty">No favorites yet. Tap the heart on a book in your Library.</div>'}
+    return f.length?f.map(b=>`<div class="row fv" style="cursor:default">${cover(b)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'')}</span></div>${dot(b)}</div>`).join('')+'<p class="mut" style="text-align:center">Swipe a book right in your Library to favorite or unfavorite it.</p>':'<div class="empty">No favorites yet. In your Library, swipe a book all the way to the right.</div>'}
   if(ptb==='wish')return `<div class="card"><b>Add to wishlist</b><div class="f" style="margin-top:10px"><input id="wi" placeholder="ISBN (optional)"><button data-act="wlook">Look up</button></div>
     <input id="wt" placeholder="Title"><input id="wa" placeholder="Author"><button class="p" data-act="wadd" style="width:100%">Add to wishlist</button></div>`+
-    ((S.wish||[]).length?S.wish.map(w=>`<div class="row wr"><div class="top">${tile(wCov(w),w.title)}<div class="mt"><b>${esc(w.title)}</b><span>${esc(w.author||'')}</span></div></div><div class="acts"><button data-act="wgot" data-id="${w.id}">Got it</button><button data-act="wsh" data-id="${w.id}">Share</button><button class="d" data-act="wdel" data-id="${w.id}">Remove</button></div></div>`).join(''):'<div class="empty">Your wishlist is empty.</div>');
-  if(ptb==='share'){const sh=S.shares||[];
-    const nm=x=>({profile:'My profile',stats:'My stat sheet',wish:'My wishlist',favs:'My favorites'}[x.type]||(((S.books.find(b=>b.id===x.ref)||(S.wish||[]).find(w=>w.id===x.ref)||{}).title)||'A book'));
-    return `<p class="mut">Sends a picture card plus a live link. The page behind the link updates when you change things.${user?'':' Sign in (Settings tab) to include the live link.'}</p>
-    <div class="bar"><button class="p" data-act="shr" data-id="profile">Profile &amp; stats</button><button class="p" data-act="shr" data-id="wish">Wishlist</button><button class="p" data-act="shr" data-id="favs">Favorites</button></div>
-    <p class="mut">To share one book, open it in the Library and tap Share, or tap Share on a wishlist item.</p>
-    ${sh.length?'<h3>Active links</h3>'+sh.map(x=>`<div class="row" style="cursor:default"><div class="mt"><b>${esc(nm(x))}</b><span>${esc(x.type)}</span></div><button data-act="shcopy" data-id="${x.id}">Copy link</button><button class="d" data-act="shstop" data-id="${x.id}">Stop</button></div>`).join(''):''}`}
-  return `<label class="ck"><input type="checkbox" id="cont" ${cont?'checked':''}><span>Continuous scan: keep the camera open and add one book after another</span></label>
-    <label class="mut" style="display:block;margin:14px 0 6px">Page link used in QR codes (optional)</label><input id="url" placeholder="https://… link to this page" value="${esc(S.url||'')}">
-    <div class="bar"><button class="p" data-act="saveu">Save link</button></div>
-    <div class="bar"><button data-act="exp">Back up to file</button><button data-act="imp">Restore backup</button><button data-act="csv">Export spreadsheet (CSV)</button></div>
-    <input id="f" type="file" accept="application/json" style="display:none">
-    <div class="card"><b>Account</b><p class="mut" style="margin:6px 0 10px">${fb?(user?esc(user.email||'Signed in')+'. Your library syncs across devices.':'Guest: your books stay on this device only.'):'Sign-in is not turned on yet, so your books stay on this device.'}</p>
-    ${fb?`<button class="${user?'d':'p'}" data-act="${user?'signout':'acct'}" style="width:100%">${user?'Sign out':'Sign in or create account'}</button>`:''}</div>`;
+    ((S.wish||[]).length?S.wish.map(w=>`<div class="row wr"><div class="top">${tile(wCov(w),w.title)}<div class="mt"><b>${esc(w.title)}</b><span>${esc(w.author||'')}</span>${w.msrp!=null?`<span class="x">${money(w.msrp,w.cur)}</span>`:''}</div></div><div class="acts"><button data-act="wgot" data-id="${w.id}">Got it</button><button data-act="wsh" data-id="${w.id}">Share</button><button class="d" data-act="wdel" data-id="${w.id}">Remove</button></div></div>`).join(''):'<div class="empty">Your wishlist is empty.</div>');
+  if(ptb==='share'){const on=p.on||{},shb=p.shb||[];
+    const row=(k,sec,t,d)=>`<div class="sr"><div class="mt"><b>${t}</b><span>${d}</span></div><label class="tg"><input type="checkbox" data-sec="${k}" ${on[k]?'checked':''}><i></i></label></div>${on[k]?`<div class="sr"><button class="p" data-act="shr" data-s="${sec}" style="flex:1">Share</button><button data-act="shcopy" data-s="${sec}" style="flex:1">Copy link</button></div>`:''}`;
+    return `${user?'':'<p class="mut">Sign in (Settings tab) to share public pages.</p>'}
+    <div class="sg"><h4>Your public pages${h?' \u00b7 @'+esc(h):''}</h4>${h?'':'<div class="sr"><div class="mt"><span>Pick your @handle in the Profile tab first.</span></div></div>'}
+    ${row('p','','Profile &amp; stats','Name, photo, bio and your stat sheet')}${row('f','favorites','Favorites','Books you favorited')}${row('w','wishlist','Wishlist','Books you want')}</div>
+    <p class="mut">To share one book, open it in your Library and tap Share, or tap Share on a wishlist item.</p>
+    ${shb.length?'<div class="sg"><h4>Shared books</h4>'+shb.map(z=>{const b=z.k==='b'?S.books.find(x=>x.id===z.id):(S.wish||[]).find(x=>x.id===z.id);return b?`<div class="sr"><div class="mt"><b>${esc(b.title)}</b><span>${z.k==='b'?'In your collection':'On your wishlist'}</span></div><button data-act="shcopy" data-s="${z.k==='b'?'book':'wish'}" data-id="${z.id}">Copy link</button><button class="d" data-act="shrm" data-id="${z.id}">Stop</button></div>`:''}).join('')+'</div>':''}`}
+  return setHtml();
 }
 function showProfile(tab){
   if(tab)ptb=tab;
@@ -632,19 +764,17 @@ function showProfile(tab){
 
 /* share cards + live links */
 const shBase=()=>S.url||(location.protocol.startsWith('http')?location.origin+location.pathname:'');
-function shareData(type,ref){
+function shareData(type){
   const p=S.profile||{},B=S.books,who=p.name||(user&&user.displayName)||'A book lover';
-  const mini=b=>({t:b.title,a:b.author||'',c:bkCover(b),o:!!b.out});
+  const mini=b=>({id:b.id,t:b.title,a:b.author||'',c:bkCover(b),o:!!b.out});
   const d={type,who,av:p.avatar||(user&&user.photoURL)||''};
   if(type==='profile'){d.bio=p.bio||'';d.genre=p.genre||'';d.place=p.place||'';d.num=myNums();d.rows=statRows()}
-  else if(type==='stats'){d.num=myNums();d.rows=statRows()}
-  else if(type==='wish')d.items=(S.wish||[]).map(w=>({t:w.title,a:w.author||'',c:wCov(w)}));
+  else if(type==='wish')d.items=(S.wish||[]).map(w=>({id:w.id,t:w.title,a:w.author||'',c:wCov(w),m:w.msrp,u:w.cur}));
   else if(type==='favs')d.items=B.filter(b=>b.fav).map(mini);
-  else{const b=B.find(x=>x.id===ref),w=(S.wish||[]).find(x=>x.id===ref);
-    if(b){d.type='book';d.items=[mini(b)]}else if(w){d.type='bookwish';d.items=[{t:w.title,a:w.author||'',c:wCov(w)}]}}
   return d;
 }
-const shLink=id=>SHARE_WORKER?SHARE_WORKER.replace(/\/$/,'')+'/s/'+id:shBase()+'#s='+id;
+const hdl=()=>(S.profile&&S.profile.handle)||'';
+const shLink=(sec,id)=>{const path='/@'+hdl()+(sec?'/'+sec+(id?'/'+id:''):'');return SHARE_WORKER?SHARE_WORKER.replace(/\/$/,'')+path:shBase()+'#'+path};
 const cardDesc=d=>{
   const n=d.num,r=d.rows&&d.rows[0],c=(d.items||[]).length;
   if(d.type==='profile'||d.type==='stats')return n.books+' books \u00b7 '+n.favs+' favorites'+(r&&r.n?' \u00b7 Favorite Book: '+r.t:'');
@@ -652,13 +782,7 @@ const cardDesc=d=>{
   if(d.type==='favs')return c+(c===1?' favorite book':' favorite books');
   const i=(d.items||[])[0];return i?i.t+(i.a?' by '+i.a:''):'Bookshelf';
 };
-async function ogImage(d){const c=await drawOg(d);let u=c.toDataURL('image/jpeg',.82);if(u.length>700000)u=c.toDataURL('image/jpeg',.6);return u}
-async function publish(sh,withImg){
-  const d=shareData(sh.type,sh.ref),o={owner:user.uid,type:sh.type,t:Date.now(),d:JSON.stringify(d),ti:cardTitle(d),de:cardDesc(d)};
-  if(withImg)o.img=await ogImage(d);
-  await fb.d.doc('shares/'+sh.id).set(o,{merge:true});
-}
-function repub(){clearTimeout(rpT);if(!user||!fb||!(S.shares||[]).length)return;rpT=setTimeout(()=>S.shares.forEach(sh=>publish(sh).catch(()=>{})),2500)}
+async function ogImage(d){const c=await drawOg(d);let q=.82,u=c.toDataURL('image/jpeg',q);while(u.length>220000&&q>.4){q-=.12;u=c.toDataURL('image/jpeg',q)}return u}
 const cardTitle=d=>({profile:d.who+'\u2019s Bookshelf',stats:d.who+'\u2019s reading stats',wish:d.who+'\u2019s wishlist',favs:d.who+'\u2019s favorites',book:d.who+' shared a book',bookwish:d.who+' wants this book'}[d.type]||'Bookshelf');
 const rr=(x,a,b,w,h,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
 function wrapT(x,t,mw,ml){const w=String(t||'').split(/\s+/).filter(Boolean),L=[];let l='';for(const k of w){const n=l?l+' '+k:k;if(x.measureText(n).width>mw&&l){L.push(l);l=k}else l=n}if(l)L.push(l);if(L.length>ml){L.length=ml;L[ml-1]=L[ml-1].replace(/.{0,2}$/,'\u2026')}return L}
@@ -705,25 +829,6 @@ async function drawCard(d){
   x.textAlign='right';x.fillStyle='#8fb4e8';x.font='700 34px Georgia,serif';x.fillText('Bookshelf',W-70,H-50);x.textAlign='left';
   return c;
 }
-async function shareThing(type,ref){
-  const d=shareData(type,ref);let link='',emb=false;
-  if(d.type==='book'||d.type==='bookwish')type='book';
-  if(user&&fb){
-    try{let sh=(S.shares=S.shares||[]).find(z=>z.type===type&&z.ref===(ref||''));
-      if(!sh){sh={id:uid()+uid(),type,ref:ref||''};S.shares.push(sh);save()}
-      toast('Preparing link\u2026');await publish(sh,!!SHARE_WORKER);link=shLink(sh.id);emb=!!SHARE_WORKER}
-    catch(e){toast('Could not create the link. Check your Firestore rules.')}
-  }else toast('Sign in to add a live link. Sharing the picture only.');
-  const t=cardTitle(d);
-  try{
-    if(emb){await navigator.share({url:link,title:t});return}
-    const c=await drawCard(d),blob=await new Promise(r=>c.toBlob(r,'image/png')),tx=t+(link?'\n'+link:''),file=new File([blob],'bookshelf-'+type+'.png',{type:'image/png'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:tx,title:t});return}
-    if(navigator.share){await navigator.share({text:tx,title:t});return}
-  }catch(err){if(err&&err.name==='AbortError')return}
-  const text=t+(link?'\n'+link:'');
-  try{await navigator.clipboard.writeText(text);toast('Link copied')}catch(err){toast(link||'Sharing is not supported here')}
-}
 async function drawOg(d){
   const W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),SANS='-apple-system,Helvetica,Arial,sans-serif';
   const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#16202e');g.addColorStop(1,'#25497a');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -757,97 +862,384 @@ async function drawOg(d){
   return c;
 }
 
-/* shared view (what a friend sees) */
-function shareHtml(d){
-  const T={profile:'Profile',stats:'Reading stats',wish:'Wishlist',favs:'Favorites',book:'From their collection',bookwish:'On their wishlist'}[d.type]||'';
-  const head=`<div class="shh"><div class="sav"><span>${esc((d.who||'B')[0].toUpperCase())}</span>${d.av?`<img src="${esc(d.av)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</div><div><h2>${esc(d.who)}</h2><span class="mut">${T}</span></div></div>`;
-  let b='';
-  if(d.type==='profile'){b=(d.bio?`<p>${esc(d.bio)}</p>`:'')+((d.genre||d.place)?`<p class="mut">${esc([d.genre,d.place].filter(Boolean).join(' \u00b7 '))}</p>`:'')+numsHtml(d.num)+rowsHtml(d.rows||[])}
-  else if(d.type==='stats')b=numsHtml(d.num)+rowsHtml(d.rows||[]);
-  else b=`<p class="mut">${(d.items||[]).length} ${(d.items||[]).length===1?'book':'books'}</p>`+gridHtml(d.items||[]);
-  return head+b;
+/* ===== public pages: @handles, sharing, viewer ===== */
+const FV=()=>firebase.firestore.FieldValue,appUrl=()=>location.protocol.startsWith('http')?location.origin+location.pathname:'';
+function pubBooks(){
+  const o={};(S.profile.shb||[]).forEach(z=>{const b=z.k==='b'?S.books.find(x=>x.id===z.id):(S.wish||[]).find(x=>x.id===z.id);
+    if(b)o[z.id]=z.k==='b'?{k:'b',t:b.title,a:b.author||'',c:bkCover(b),o:!!b.out,m:b.msrp,u:b.cur}:{k:'w',t:b.title,a:b.author||'',c:wCov(b),m:b.msrp,u:b.cur}});
+  return o;
 }
-function closeShare(){if(shUnsub){shUnsub();shUnsub=null}const o=$('#shv');if(o)o.remove();try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
-function openShare(id){
-  if(!fb){toast('This link needs sync turned on in the app');return}
-  closeShare();
+function pubBuild(imgs){
+  const P=S.profile||{},on=P.on||{},D=FV().delete();
+  const pd=on.p?shareData('profile'):null,fd=on.f?shareData('favs'):null,wd=on.w?shareData('wish'):null;
+  const o={owner:user.uid,h:P.handle,wn:P.name||(user&&user.displayName)||'',t:Date.now(),on:JSON.stringify(on),app:appUrl(),bk:JSON.stringify(pubBooks()),
+    p:pd?JSON.stringify(pd):D,tp:pd?cardTitle(pd):D,dp:pd?cardDesc(pd):D,
+    f:fd?JSON.stringify(fd):D,tf:fd?cardTitle(fd):D,df:fd?cardDesc(fd):D,
+    w:wd?JSON.stringify(wd):D,tw:wd?cardTitle(wd):D,dw:wd?cardDesc(wd):D};
+  if(!on.p)o.ip=D;if(!on.f)o.ifv=D;if(!on.w)o.iw=D;
+  return Object.assign(o,imgs||{});
+}
+async function pubPush(imgs){if(!user||!fb||!hdl())return;await fb.d.doc('pub/'+hdl().toLowerCase()).set(pubBuild(imgs),{merge:true})}
+function repub(){clearTimeout(rpT);if(!user||!fb||!hdl())return;rpT=setTimeout(()=>pubPush().catch(()=>{}),2500)}
+async function claimHandle(h){
+  const low=h.toLowerCase(),P=S.profile,old=(P.handle||'').toLowerCase();
+  if(!/^[a-z0-9_]{3,20}$/.test(low))throw new Error('Handles use 3 to 20 letters, numbers or underscores');
+  if(low===old){P.handle=h;return}
+  const prev=P.handle;P.handle=h;
+  try{const b=fb.d.batch();b.set(fb.d.doc('pub/'+low),pubBuild(),{merge:true});if(old)b.delete(fb.d.doc('pub/'+old));await b.commit()}
+  catch(e){P.handle=prev;throw new Error('That handle is taken')}
+}
+async function checkHandle(){
+  const el=$('#ph'),m=$('#hmsg');if(!el||!m)return;const h=el.value.trim().replace(/^@/,''),low=h.toLowerCase();
+  if(!/^[a-z0-9_]{3,20}$/.test(low)){m.textContent='Use 3 to 20 letters, numbers or underscores';m.style.color='var(--dr)';return}
+  if(!fb){m.textContent='Handles need sync turned on';return}
+  m.textContent='Checking\u2026';m.style.color='';
+  try{const d=await fb.d.doc('pub/'+low).get(),mine=d.exists&&user&&d.data().owner===user.uid;
+    if(!d.exists||mine){m.textContent='@'+h+' is '+(mine?'yours':'available');m.style.color='var(--dg)'}else{m.textContent='@'+h+' is taken';m.style.color='var(--dr)'}}
+  catch(e){m.textContent='Could not check right now'}
+}
+async function saveProfile(){
+  const P=S.profile=S.profile||{};
+  Object.assign(P,{name:$('#pn').value.trim(),bio:$('#pbio').value.trim(),genre:$('#pg').value.trim(),place:$('#pl').value.trim()});
+  const nh=($('#ph').value||'').trim().replace(/^@/,''),old=P.handle||'';
+  if(nh&&nh!==old){
+    if(!(user&&fb)){toast('Sign in to claim a handle');return}
+    try{await claimHandle(nh)}catch(e){toast(e&&e.message?e.message:'That handle is taken');return}
+  }
+  save();updAv();toast('Profile saved');repub();showProfile();
+}
+async function secToggle(k,on){
+  const P=S.profile=S.profile||{};P.on=P.on||{};
+  if(on&&!(user&&fb&&P.handle)){toast(user?'Pick your @handle in the Profile tab first':'Sign in to share public pages');showProfile();return}
+  P.on[k]=on?1:0;save();
+  try{await pubPush()}catch(e){toast('Could not update. Check your Firestore rules.')}
+  showProfile();
+}
+async function shareSec(sec,id){
+  if(!(user&&fb))return toast('Sign in to share a public page');
+  const P=S.profile=S.profile||{};
+  if(!P.handle){toast('Pick your @handle in the Profile tab first');showProfile('me');return}
+  const T={'':['p','profile','ip'],favorites:['f','favs','ifv'],wishlist:['w','wish','iw']};
+  try{
+    toast('Preparing link\u2026');let d,imgs;
+    if(sec==='book'||sec==='wish'){
+      P.shb=P.shb||[];if(!P.shb.some(z=>z.id===id))P.shb.push({id,k:sec==='book'?'b':'w'});save();
+      const it=sec==='book'?S.books.find(x=>x.id===id):(S.wish||[]).find(x=>x.id===id);if(!it)return toast('That book is gone');
+      d={type:sec==='book'?'book':'bookwish',who:P.name||(user&&user.displayName)||'A book lover',av:P.avatar||'',items:[{id,t:it.title,a:it.author||'',c:sec==='book'?bkCover(it):wCov(it)}]};
+    }else{const[k,type,ik]=T[sec];P.on=P.on||{};P.on[k]=1;save();d=shareData(type);imgs={};imgs[ik]=await ogImage(d)}
+    await pubPush(imgs);
+    const link=shLink(sec,id),t=cardTitle(d);
+    if(SHARE_WORKER){await navigator.share({url:link,title:t});return}
+    const c=await drawCard(d),blob=await new Promise(r=>c.toBlob(r,'image/png')),file=new File([blob],'bookshelf.png',{type:'image/png'}),tx=t+'\n'+link;
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:tx,title:t});return}
+    await navigator.share({text:tx,title:t});
+  }catch(err){if(err&&err.name==='AbortError')return;try{await navigator.clipboard.writeText(shLink(sec,id));toast('Link copied')}catch(e2){toast('Could not share. Check your Firestore rules.')}}
+}
+let pg=null;
+function closePage(){if(pg&&pg.unsub)pg.unsub();pg=null;const o=$('#shv');if(o)o.remove();try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+function syncHash(){if(!pg)return;try{history.replaceState(null,'','#/@'+pg.h+(pg.sec?'/'+pg.sec+(pg.id?'/'+pg.id:''):''))}catch(e){}}
+function openPage(h,sec,id){
+  if(!fb){toast('This page needs sync turned on in the app');return}
+  if(pg&&pg.h.toLowerCase()===h.toLowerCase()){pg.sec=sec||'';pg.id=id||'';drawPage();return}
+  closePage();
   const o=document.createElement('div');o.id='shv';
-  o.innerHTML=`<div class="shb"><b>Bookshelf</b><button data-act="shx">Open my Bookshelf</button></div><div id="shc" class="shc"><p class="mut">Loading\u2026</p></div>`;
+  o.innerHTML=`<div class="shb"><b>Bookshelf</b><button data-act="shx">Open my Bookshelf</button></div><div id="shc" class="shc"><div class="shm" style="height:64px;border-radius:14px;margin:0 0 14px"></div><div class="shm" style="height:120px;border-radius:14px"></div></div>`;
   document.body.appendChild(o);
-  shUnsub=fb.d.doc('shares/'+id).onSnapshot(s=>{
-    const c=$('#shc');if(!c)return;
-    if(!s.exists){c.innerHTML='<div class="empty">This link is no longer shared.</div>';return}
-    try{c.innerHTML=shareHtml(JSON.parse(s.data().d))}catch(e){c.innerHTML='<div class="empty">Could not show this link.</div>'}
-  },()=>{const c=$('#shc');if(c)c.innerHTML='<div class="empty">Could not load this link.</div>'});
+  pg={h,sec:sec||'',id:id||'',pd:undefined};
+  pg.unsub=fb.d.doc('pub/'+h.toLowerCase()).onSnapshot(d=>{if(pg){pg.pd=d.exists?d.data():false;drawPage()}},()=>{if(pg){pg.pd=false;drawPage()}});
+}
+function drawPage(){
+  const c=$('#shc');if(!c||!pg||pg.pd===undefined)return;const pd=pg.pd;
+  if(pd===false){c.innerHTML='<div class="empty">This profile doesn\u2019t exist.</div>';return}
+  let on={};try{on=JSON.parse(pd.on||'{}')}catch(e){}
+  const get=k=>{try{return pd[k]?JSON.parse(pd[k]):null}catch(e){return null}},who=pd.wn||('@'+pd.h);
+  const nav=[['','Profile',on.p],['favorites','Favorites',on.f],['wishlist','Wishlist',on.w]].filter(x=>x[2]);
+  const head=(d,sub)=>`<div class="shh"><div class="sav"><span>${esc((who[0]||'B').toUpperCase())}</span>${d&&d.av?`<img src="${esc(d.av)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</div><div><h2>${esc(who)}</h2><span class="mut">@${esc(pd.h)} \u00b7 ${sub}</span></div></div>`;
+  let body='';
+  if(pg.sec==='book'||pg.sec==='wish'){
+    let bk={};try{bk=JSON.parse(pd.bk||'{}')}catch(e){}const b=bk[pg.id];
+    body=b?head(get('p'),b.k==='w'?'Wants this book':'From their collection')+`<div class="bk" style="display:flex;gap:18px;align-items:flex-start;margin:6px 0">${tile(b.c,b.t)}<div class="mt"><b style="white-space:normal;font:700 22px ui-serif,Georgia,serif">${esc(b.t)}</b><span style="display:block">${esc(b.a||'')}</span>${b.m!=null?`<span class="x">MSRP ${esc(money(b.m,b.u))}</span>`:''}${b.k==='b'?`<span class="x">${b.o?'Currently out of storage':'In storage'}</span>`:''}</div></div>`:'<div class="empty">This book isn\u2019t shared.</div>';
+  }else if(pg.sec===''){const d=get('p');body=d?head(d,'Profile')+(d.bio?`<p>${esc(d.bio)}</p>`:'')+((d.genre||d.place)?`<p class="mut">${esc([d.genre,d.place].filter(Boolean).join(' \u00b7 '))}</p>`:'')+numsHtml(d.num)+rowsHtml(d.rows||[]):'<div class="empty">This page isn\u2019t shared.</div>'}
+  else{const d=get(pg.sec==='favorites'?'f':'w');body=d?head(d,pg.sec==='favorites'?'Favorites':'Wishlist')+`<p class="mut">${(d.items||[]).length} ${(d.items||[]).length===1?'book':'books'}</p>`+gridHtml(d.items||[]):'<div class="empty">This page isn\u2019t shared.</div>'}
+  c.innerHTML=(nav.length>1?`<div class="pt">${nav.map(n=>`<button data-act="vsec" data-s="${n[0]}" class="${pg.sec===n[0]?'on':''}">${n[1]}</button>`).join('')}</div>`:'')+body;
 }
 fixMeta();
 
 
-/* ===== plus extras ===== */
-const SORTS={title:(a,b)=>a.title.localeCompare(b.title),author:(a,b)=>(!a.author)-(!b.author)||(a.author||'').localeCompare(b.author||'')||a.title.localeCompare(b.title),new:(a,b)=>(b.added||0)-(a.added||0),out:(a,b)=>(b.out?Date.now()-(b.since||0):-1)-(a.out?Date.now()-(a.since||0):-1)};
+
+/* ===== v3 helpers: settings, icons, audio, data service ===== */
+let cfg=Object.assign({sound:1,flash:1,theme:'auto',dense:0,outdays:1,dev:0,beta:{}},(()=>{try{return JSON.parse(ls('bookshelf.cfg')||'{}')}catch(e){return{}}})());
+const beta=k=>!!(cfg.dev&&cfg.beta&&cfg.beta[k]);
+function applyCfg(){
+  const r=document.documentElement;
+  if(cfg.theme==='auto')delete r.dataset.theme;else r.dataset.theme=cfg.theme;
+  document.body.classList.toggle('dense',!!cfg.dense);document.body.classList.toggle('gloss',beta('gloss'));
+  const z=beta('adapt')?Math.max(.8,Math.min(1,innerWidth/390)):1;r.style.setProperty('--z',z);r.classList.toggle('adapt',z<1);
+}
+function setCfg(k,v){cfg[k]=v;ls('bookshelf.cfg',JSON.stringify(cfg));applyCfg();render()}
+function setBeta(k,v){cfg.beta=cfg.beta||{};cfg.beta[k]=v?1:0;ls('bookshelf.cfg',JSON.stringify(cfg));applyCfg();render()}
+const nrm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+const money=(n,c)=>{try{return new Intl.NumberFormat(undefined,{style:'currency',currency:c||'USD'}).format(n)}catch(e){return '$'+n}};
+const CURS={'0':'GBP','1':'GBP','3':'AUD','4':'NZD','5':'USD','6':'CAD'};
+function ean5(x){x=String(x||'').replace(/\D/g,'');if(x.length!==5||+x>=90000)return null;const c=CURS[x[0]],n=+x.slice(1);return c&&n?{msrp:n/100,cur:c}:null}
+const ocrPrice=t=>{const m=String(t).match(/\$\s?(\d{1,3}\.\d{2})(?!\d)/);return m?+m[1]:null};
+function codeKind(s){s=String(s).replace(/\D/g,'');if(s.length===13&&chk13(s)){if(/^9790/.test(s))return'ISMN';if(/^97[89]/.test(s))return'ISBN-13';if(/^977/.test(s))return'ISSN';return'EAN-13'}return s.length===12?'UPC-A':s.length===8?'EAN-8':s.length===10?'ISBN-10':'Code'}
+const IC=(d,sz,x)=>`<svg viewBox="0 0 24 24" width="${sz||22}" height="${sz||22}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const TRASH=IC('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12h10l1-12M9 7V4h6v3"/>'),FOLDER=IC('<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v4M10 13h4"/>'),CHECK=IC('<path d="M5 12.5l4.5 4.5L19 7.5"/>',14).replace('stroke-width="2"','stroke-width="3.4"');
+const HEARTW='<svg viewBox="0 0 24 24" width="28" height="28" fill="#fff" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+const DICE=IC('<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/>');
+const scanIcon=sz=>IC('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>',sz||38);
+let AC=null;
+function audioInit(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state!=='running')AC.resume()}catch(e){}}
+function beep(f,d,v){if(!AC)return;try{const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.25,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.02)}catch(e){}}
 function ding(){
-  try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;g.gain.value=.08;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.12)}catch(e){}
-  const sc=$('#sc');if(sc){sc.classList.remove('fl');void sc.offsetWidth;sc.classList.add('fl')}
+  if(cfg.sound){audioInit();beep(1046,.09,.3);setTimeout(()=>beep(1568,.16,.3),90)}
+  if(cfg.flash){const sc=$('#sc');if(sc){sc.classList.remove('fl');void sc.offsetWidth;sc.classList.add('fl')}}
+}
+async function api(path){
+  if(!SHARE_WORKER)return null;
+  try{const h={};if(user&&user.getIdToken)h.Authorization='Bearer '+await user.getIdToken();
+    const r=await fetch(SHARE_WORKER.replace(/\/$/,'')+path,{headers:h});return r.ok?await r.json():null}catch(e){return null}
+}
+
+/* ===== sort menu ===== */
+const SLAB={title:'A\u2013Z',author:'Author',new:'Newest',out:'Longest out',msrpl:'MSRP \u2193',msrph:'MSRP \u2191'};
+const SFULL=[['title','A\u2013Z (title)'],['author','Author'],['new','Newest first'],['out','Out the longest'],['msrpl','MSRP \u2193  Lowest first'],['msrph','MSRP \u2191  Highest first']];
+const SORTS={title:(a,b)=>a.title.localeCompare(b.title),author:(a,b)=>(!a.author)-(!b.author)||(a.author||'').localeCompare(b.author||'')||a.title.localeCompare(b.title),new:(a,b)=>(b.added||0)-(a.added||0),out:(a,b)=>(b.out?Date.now()-(b.since||0):-1)-(a.out?Date.now()-(a.since||0):-1),
+  msrpl:(a,b)=>(a.msrp==null)-(b.msrp==null)||(a.msrp||0)-(b.msrp||0),msrph:(a,b)=>(a.msrp==null)-(b.msrp==null)||(b.msrp||0)-(a.msrp||0)};
+function showSort(){modal(`<h2>Sort by</h2>${SFULL.map(o=>`<div class="opt" data-act="setsort" data-id="${o[0]}"><span class="chk${srt===o[0]?' on':''}">${srt===o[0]?CHECK:''}</span><div class="mt"><b>${o[1]}</b></div></div>`).join('')}<button data-act="close" style="width:100%;margin-top:12px">Close</button>`)}
+
+/* ===== swipe rows ===== */
+const OPENW=150;let swOpen=null,swS=null,swBlock=0;
+function swReset(el,anim){const r=el.querySelector('.row');r.style.transition=anim?'transform .25s cubic-bezier(.2,.8,.2,1)':'none';r.style.transform='';el.classList.remove('open','al','ar','go','full');el.style.removeProperty('--p');if(swOpen===el)swOpen=null}
+document.addEventListener('touchstart',e=>{
+  const sw=e.target.closest('.sw');
+  if(swOpen&&swOpen!==sw)swReset(swOpen,1);
+  if(!sw||e.target.closest('.swr'))return;
+  const t=e.touches[0];swS={el:sw,x:t.clientX,y:t.clientY,lock:0,w:sw.offsetWidth,base:sw.classList.contains('open')?-OPENW:0,cur:0};
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!swS)return;const t=e.touches[0],dx=t.clientX-swS.x,dy=t.clientY-swS.y;
+  if(!swS.lock){if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.5)swS.lock=1;else{if(Math.abs(dy)>10)swS=null;return}}
+  if(e.cancelable)e.preventDefault();
+  const w=swS.w,x=Math.max(-w,Math.min(w,swS.base+dx)),sw=swS.el,row=sw.querySelector('.row');swS.cur=x;
+  row.style.transition='none';row.style.transform='translateX('+x+'px)';
+  sw.classList.toggle('al',x>0);sw.classList.toggle('ar',x<0);sw.classList.toggle('go',x>w*.45);sw.classList.toggle('full',x<-w*.5);
+  sw.style.setProperty('--p',Math.min(1,Math.abs(x)/(w*.45)));
+},{passive:false});
+document.addEventListener('touchend',()=>{
+  const s=swS;swS=null;if(!s||!s.lock)return;swBlock=Date.now();
+  const{el,w,cur:x}=s,id=el.dataset.id,row=el.querySelector('.row');
+  if(x>w*.45){swReset(el,1);togFav(id)}
+  else if(x<-w*.5){row.style.transition='transform .2s ease-in';row.style.transform='translateX(-110%)';setTimeout(()=>delBook(id),190)}
+  else if(x<-OPENW*.5){row.style.transition='transform .25s cubic-bezier(.2,.8,.2,1)';row.style.transform='translateX('+(-OPENW)+'px)';el.classList.add('open','ar');el.classList.remove('full','go');swOpen=el}
+  else swReset(el,1);
+});
+document.addEventListener('touchcancel',()=>{if(swS&&swS.el)swReset(swS.el,1);swS=null});
+function togFav(id){const b=S.books.find(x=>x.id===id);if(!b)return;b.fav=!b.fav;save();render();toast(b.fav?'Added to favorites':'Removed from favorites');if($('#pb'))showProfile()}
+let undoT=0;
+function snack(msg,undo){const e=$('#ut');e.innerHTML=`<span>${esc(msg)}</span><button data-act="undo">Undo</button>`;e.style.display='flex';e._u=undo;clearTimeout(undoT);undoT=setTimeout(()=>e.style.display='none',6000)}
+function delBook(id){
+  const b=S.books.find(x=>x.id===id);if(!b)return;
+  const gs=S.groups.filter(g=>g.ids.includes(id)).map(g=>g.id),idx=S.books.indexOf(b);
+  S.books=S.books.filter(x=>x!==b);S.groups.forEach(g=>g.ids=g.ids.filter(i=>i!==id));save();render();
+  snack('Deleted \u201c'+b.title+'\u201d',()=>{S.books.splice(Math.min(idx,S.books.length),0,b);gs.forEach(gid=>{const g=S.groups.find(x=>x.id===gid);if(g&&!g.ids.includes(id))g.ids.push(id)});save();render()});
+}
+function showGroupPick(id){
+  const b=S.books.find(x=>x.id===id);if(!b)return;
+  modal(`<h2>Groups</h2><p class="mut" style="margin:-6px 0 8px">${esc(b.title)}</p>${S.groups.length?S.groups.map(g=>{const on=g.ids.includes(id);return `<div class="opt" data-act="gtog" data-id="${g.id}" data-b="${id}"><span class="chk${on?' on':''}">${on?CHECK:''}</span><div class="mt"><b>${esc(g.name)}</b><span>${g.ids.length} books${on?' \u00b7 added':''}</span></div></div>`}).join(''):'<div class="empty">No groups yet. Create one below.</div>'}
+  <div class="f" style="margin-top:12px"><input id="ng" placeholder="New group name"><button data-act="gnew" data-b="${id}">Create</button></div><button class="p" data-act="close" style="width:100%">Done</button>`);
+  reopen=()=>showGroupPick(id);
+}
+
+/* ===== random book ===== */
+let rAll=false,rSpin=0;
+function burst(rw){for(let i=0;i<28;i++){const c=document.createElement('i');c.className='cf';const a=Math.random()*Math.PI*2,d=60+Math.random()*130;c.style.cssText=`--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-30}px;--r:${Math.random()*720-360}deg;background:hsl(${Math.random()*360} 80% 60%)`;rw.appendChild(c);setTimeout(()=>c.remove(),1200)}}
+function showRandom(){
+  if(!S.books.length)return toast('Add some books first');
+  modal(`<h2>Random book</h2><div class="chips" style="margin:0"><button data-act="rpool" data-id="in" class="${rAll?'':'on'}">In storage</button><button data-act="rpool" data-id="all" class="${rAll?'on':''}">All books</button></div>
+  <div class="rw" id="rw"><div class="rm"></div><div class="rt" id="rt"></div></div><div id="rres" style="text-align:center;min-height:92px"></div>
+  <div class="bar"><button class="p" data-act="rspin">Spin</button><button data-act="close">Close</button></div>`);
+  setTimeout(spin,250);
+}
+function spin(){
+  const P=S.books.filter(b=>rAll||!b.out),rt=$('#rt'),rw=$('#rw');if(!rt)return;
+  clearInterval(rSpin);
+  if(!P.length){rt.innerHTML='';$('#rres').innerHTML='<p class="mut">Nothing in storage to pick from. Try All books.</p>';return}
+  const N=44,win=P[Math.floor(Math.random()*P.length)],items=[];
+  for(let i=0;i<N;i++)items.push(P[Math.floor(Math.random()*P.length)]);
+  const wi=N-5;items[wi]=win;
+  rt.innerHTML=items.map(b=>`<div class="rc" style="background:hsl(${hue(b.title||'?')} 38% 36%)"><span>${esc((b.title||'?')[0].toUpperCase())}</span>${bkImg(b)}</div>`).join('');
+  $('#rres').innerHTML='<p class="mut">Spinning\u2026</p>';
+  const cw=118,vw=rw.clientWidth,tgt=-(wi*cw+52-vw/2),cards=[...rt.children];
+  rt.style.transition='none';rt.style.transform='translate(0,-50%)';void rt.offsetWidth;
+  rt.style.transition='transform 4.4s cubic-bezier(.1,.7,.12,1)';rt.style.transform='translate('+tgt+'px,-50%)';
+  let last=-1;
+  rSpin=setInterval(()=>{
+    if(!$('#rt')){clearInterval(rSpin);return}
+    let m41=0;try{m41=new DOMMatrix(getComputedStyle(rt).transform).m41}catch(e){}
+    const idx=Math.round((vw/2-52-m41)/cw);
+    if(idx!==last){last=idx;cards.forEach((c,i)=>c.classList.toggle('mid',i===idx));if(cfg.sound){audioInit();beep(700+(idx%5)*60,.03,.1)}}
+  },40);
+  rt.addEventListener('transitionend',()=>{
+    clearInterval(rSpin);if(!$('#rt'))return;cards.forEach(c=>c.classList.remove('mid'));cards[wi].classList.add('won');burst(rw);ding();
+    $('#rres').innerHTML=`<b style="font-size:18px">${esc(win.title)}</b><div class="mut">${esc(win.author||'')}</div><div class="bar" style="margin:10px 0 0"><button data-act="edit" data-id="${win.id}">Details</button><button data-act="rspin">Spin again</button></div>`;
+  },{once:true});
+}
+
+/* ===== add tab: scan / type / search ===== */
+let addTab=ls('bookshelf.addtab')||'scan',srRes=[],srQ='',srBusy=0,tlT=0;
+const pvHtml=()=>{
+  const sk=`<div class="cv shm"></div><div style="flex:1"><div class="shm" style="height:14px;border-radius:6px;width:70%;margin:0 0 8px"></div><div class="shm" style="height:12px;border-radius:6px;width:45%"></div></div>`;
+  if(draft.loading)return sk;
+  if(!draft.title)return `<div class="mut" style="margin:auto;text-align:center;font-size:14px">Enter or speak an ISBN or EAN to preview the book</div>`;
+  const bits=[draft.pub,draft.date&&String(draft.date).slice(0,4),draft.pages&&draft.pages+' pages',draft.msrp!=null&&money(draft.msrp,draft.cur)].filter(Boolean),i=toIsbn(draft.isbn)||draft.isbn;
+  return `${tile(draft.cover||(i?'https://covers.openlibrary.org/b/isbn/'+i+'-M.jpg?default=false':''),draft.title)}<div class="mt"><b>${esc(draft.title)}</b><span>${esc(draft.author||'')}</span>${bits.length?`<span class="x">${esc(bits.join(' \u00b7 '))}</span>`:''}</div>`;
+};
+async function typeLook(){
+  if(!$('#tpv'))return;
+  const raw=($('#isbn').value||'').replace(/[^\dX]/gi,'').toUpperCase(),code=toIsbn(raw)||(/^\d{8}$|^\d{12,13}$/.test(raw)?raw:'');
+  if(!code)return;
+  draft.isbn=code;draft.loading=1;$('#tpv').innerHTML=pvHtml();
+  const d=await lookup(code)||await lookupBC(code);
+  if(!$('#tpv'))return;
+  draft.loading=0;
+  if(d){Object.assign(draft,d,{isbn:toIsbn(code)||code});const fill=(id,v)=>{const e=$('#'+id);if(e&&!e.value&&v!=null&&v!=='')e.value=v};fill('ti',d.title);fill('au',d.author);fill('ms',d.msrp)}
+  else toast('No match. Type the title in.');
+  $('#tpv').innerHTML=pvHtml();
+}
+function addWish(o){
+  const isbn=toIsbn(o.isbn||'')||o.isbn||'';
+  if(isbn&&(S.wish||[]).some(w=>w.isbn===isbn)){toast('Already on your wishlist');return}
+  (S.wish=S.wish||[]).push({id:uid(),title:o.title,author:o.author||'',isbn,cover:o.cover||'',msrp:o.msrp,cur:o.cur});save();toast('Added to wishlist');
+}
+const pick13=a=>(a||[]).map(toIsbn).find(Boolean)||'';
+async function olSearch(q){
+  try{const j=await (await fetch('https://openlibrary.org/search.json?q='+encodeURIComponent(q)+'&limit=20&fields=title,author_name,first_publish_year,isbn,cover_i,publisher')).json();
+    return(j.docs||[]).map(d=>({title:d.title,author:(d.author_name||[]).slice(0,2).join(', '),isbn:pick13(d.isbn),date:d.first_publish_year,pub:(d.publisher||[])[0]||'',cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-M.jpg':''})).filter(r=>r.title)}catch(e){return[]}
+}
+function srHtml(){
+  if(srBusy)return[1,2,3].map(()=>`<div class="pv"><div class="cv shm"></div><div style="flex:1"><div class="shm" style="height:14px;border-radius:6px;width:70%;margin:0 0 8px"></div><div class="shm" style="height:12px;border-radius:6px;width:45%"></div></div></div>`).join('');
+  if(!srQ)return '<div class="empty">Search any book by title, author or ISBN, then add it to your library, a group or your wishlist.</div>';
+  if(!srRes.length)return '<div class="empty">No books found.</div>';
+  return srRes.map((r,i)=>`<div class="row wr"><div class="top">${tile(r.img||r.cover||(r.isbn?'https://covers.openlibrary.org/b/isbn/'+r.isbn+'-M.jpg?default=false':''),r.title)}<div class="mt"><b>${esc(r.title)}</b><span>${esc(r.author||'')}</span><span class="x">${esc([r.pub,r.date&&String(r.date).slice(0,4),r.msrp!=null&&money(r.msrp,'USD')].filter(Boolean).join(' \u00b7 '))}</span></div></div><div class="acts"><button data-act="sradd" data-i="${i}">Library</button><button data-act="srgrp" data-i="${i}">Group</button><button data-act="srwish" data-i="${i}">Wishlist</button></div></div>`).join('');
+}
+async function doSearch(){
+  if(!srQ)return;srBusy=1;if($('#srl'))$('#srl').innerHTML=srHtml();
+  let res=await api('/api/search?q='+encodeURIComponent(srQ));
+  if(!res||!res.length)res=await olSearch(srQ);
+  srRes=res;srBusy=0;if($('#srl'))$('#srl').innerHTML=srHtml();
+}
+const srBook=i=>{const r=srRes[i];return r?{title:r.title,author:r.author,isbn:r.isbn,pub:r.pub,date:r.date,pages:r.pages,msrp:r.msrp!=null?r.msrp:undefined,cover:r.cover&&!/isbndb/i.test(r.cover)?r.cover:''}:null};
+function addView(){
+  const m=$('#main'),rec=[...S.books].sort((a,b)=>(b.added||0)-(a.added||0)).slice(0,3);
+  const seg=`<div class="seg">${[['scan','Scan'],['type','Type'],['search','Search']].map(t=>`<button data-act="atab" data-id="${t[0]}" class="${addTab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>`;
+  let h='';
+  if(addTab==='scan')h=`<button class="hero" data-act="scanisbn">${scanIcon(38)}<div><b>Scan a book</b><span>Printed ISBN, barcode or price add-on</span></div></button>
+    <div class="sg"><div class="sr"><div class="mt"><b>Continuous scan</b><span>Keep the camera open and add one book after another</span></div><label class="tg"><input type="checkbox" data-cfg="cont" ${cont?'checked':''}><i></i></label></div></div>
+    ${rec.length?'<h3 style="margin:18px 0 8px">Recently added</h3>'+rec.map(b=>`<div class="row" data-act="edit" data-id="${b.id}">${cover(b)}<div class="mt"><b>${esc(b.title)}</b><span>${esc(b.author||'')}</span>${b.msrp!=null?`<span class="x">${money(b.msrp,b.cur)}</span>`:''}</div></div>`).join(''):''}`;
+  else if(addTab==='type')h=`<div class="card" style="padding:14px">
+    <div class="f"><input id="isbn" placeholder="ISBN or EAN (type, paste or speak)" value="${esc(draft.isbn||'')}"><button data-act="mic" data-id="isbn" data-d="1" aria-label="Speak the ISBN">Speak</button></div>
+    <div id="tpv" class="pv">${pvHtml()}</div>
+    <div class="f"><input id="ti" placeholder="Title" value="${esc(draft.title||'')}"><button data-act="mic" data-id="ti" aria-label="Speak the title">Speak</button></div>
+    <div class="f"><input id="au" placeholder="Author" value="${esc(draft.author||'')}"><button data-act="mic" data-id="au" aria-label="Speak the author">Speak</button></div>
+    <div class="two"><input id="ms" inputmode="decimal" placeholder="MSRP" value="${draft.msrp!=null?draft.msrp:''}"><input id="no" placeholder="Notes" value="${esc(draft.notes||'')}"></div>
+    <button class="p" data-act="addman" style="width:100%;margin:0 0 8px">Add to library</button>
+    <div class="two" style="margin:0"><button data-act="tgrp">Add to a group</button><button data-act="twish">Wishlist</button></div></div>`;
+  else h=`<div class="f s2"><input id="qs" type="search" placeholder="Search by title, author or ISBN" value="${esc(srQ)}"><button class="p" data-act="srgo">Search</button></div><div id="srl">${srHtml()}</div>`;
+  m.innerHTML=seg+h;
+}
+function grpView(){
+  $('#main').innerHTML=`<div class="bar"><button class="p" data-act="newg">New group</button><button data-act="scanqr">Scan group QR</button></div>`+(S.groups.length?S.groups.map(g=>{const bs=g.ids.map(i=>S.books.find(b=>b.id===i)).filter(Boolean),o=bs.filter(b=>b.out).length;return `<div class="gc" data-act="grp" data-id="${g.id}" style="--gcol:${GC[g.color||0]}"><div class="stk">${bs.slice(0,3).map(b=>cover(b)).join('')}</div><div class="mt"><b>${esc(g.name)}</b><span>${bs.length} ${bs.length===1?'book':'books'} \u00b7 ${o} out</span></div></div>`}).join(''):`<div class="empty">No groups yet. Make one for a shelf, box or room, then print its QR code.</div>`);
 }
 document.addEventListener('click',e=>{
+  audioInit();
   const nv=e.target.closest('nav button');if(nv){view=nv.dataset.v;render();return}
   const el=e.target.closest('[data-act]');if(!el){if(e.target.id==='m')closeM();return}
   const a=el.dataset.act,id=el.dataset.id;
   if(a==='close')closeM();
   else if(a==='tog'){const b=S.books.find(x=>x.id===id);if(b){b.out=!b.out;if(b.out)b.outs=(b.outs||0)+1;b.since=Date.now();save();render();reopen&&reopen()}}
   else if(a==='flt'){flt=id;render()}
-  else if(a==='edit')editBook(id);
-  else if(a==='saveb'){const b=S.books.find(x=>x.id===id),t=$('#ti').value.trim();if(!t)return toast('Add a title');Object.assign(b,{title:t,author:$('#au').value.trim(),isbn:(x=>toIsbn(x)||x)($('#isbn').value.trim()),notes:$('#no').value.trim(),holder:$('#hd').value.trim()});save();closeM();render()}
-  else if(a==='delb'){if(confirm('Delete this book?')){S.books=S.books.filter(x=>x.id!==id);S.groups.forEach(g=>g.ids=g.ids.filter(i=>i!==id));save();closeM();render()}}
+  else if(a==='edit'){if(Date.now()-swBlock<400)return;const sw=el.closest('.sw');if(sw&&sw.classList.contains('open')){swReset(sw,1);return}editBook(id)}
+  else if(a==='saveb'){const b=S.books.find(x=>x.id===id),t=$('#ti').value.trim();if(!t)return toast('Add a title');
+    Object.assign(b,{title:t,author:$('#au').value.trim(),isbn:(x=>toIsbn(x)||x)($('#isbn').value.trim()),notes:$('#no').value.trim(),msrp:(v=>v===''||isNaN(v)?null:+v)($('#mp').value.trim())});
+    if(b.msrp!=null&&!b.cur)b.cur='USD';if($('#hd'))b.holder=$('#hd').value.trim();save();closeM();render()}
+  else if(a==='delb'){if(confirm('Delete this book?')){closeM();delBook(id)}}
   else if(a==='scanisbn')scanBook();
-  else if(a==='look')doLook();
-  else if(a==='addman'){const t=$('#ti').value.trim();if(!t)return toast('Add a title');
-    if(addBook({title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase(),notes:$('#no').value.trim(),cover:draft.cover})){draft={};view='lib';render();toast('Added')}}
+  else if(a==='atab'){addTab=id;ls('bookshelf.addtab',id);render()}
+  else if(a==='addman'||a==='tgrp'||a==='twish'){
+    const t=$('#ti').value.trim();if(!t)return toast('Add a title');
+    const o=Object.assign({},draft,{loading:0,title:t,author:$('#au').value.trim(),isbn:$('#isbn').value.replace(/[^\dX]/gi,'').toUpperCase(),notes:$('#no').value.trim(),msrp:(v=>v===''||isNaN(v)?undefined:+v)($('#ms').value.trim())});
+    if(a==='twish'){addWish(o);draft={};render();return}
+    const b=addBook(o);if(!b)return;draft={};render();
+    if(a==='tgrp')showGroupPick(b.id);else{toast('Added to your library');if(beta('opendetails'))editBook(b.id)}}
+  else if(a==='srgo'){srQ=$('#qs').value.trim();doSearch()}
+  else if(a==='sradd'){const o=srBook(+el.dataset.i);if(o&&addBook(o)){toast('Added to your library');ding()}}
+  else if(a==='srgrp'){const o=srBook(+el.dataset.i);if(o){const b=addBook(o)||S.books.find(x=>(toIsbn(x.isbn)||x.isbn)===(toIsbn(o.isbn)||o.isbn));if(b)showGroupPick(b.id)}}
+  else if(a==='srwish'){const o=srBook(+el.dataset.i);if(o)addWish(o)}
   else if(a==='newg')groupForm();
   else if(a==='editg')groupForm(id);
-  else if(a==='saveg'){const n=$('#gn').value.trim();if(!n)return toast('Name the group');const ids=[...document.querySelectorAll('#mb .ck input:checked')].map(x=>x.value);
-    if(id){Object.assign(S.groups.find(x=>x.id===id),{name:n,ids})}else S.groups.push({id:uid(),name:n,ids});save();closeM();render()}
+  else if(a==='pk'){el.classList.toggle('on');const n=$('#pkn');if(n)n.textContent=document.querySelectorAll('#mb .pkt.on').length+' selected'}
+  else if(a==='gcol'){document.querySelectorAll('#mb .sws i').forEach(x=>x.classList.toggle('on',x===el))}
+  else if(a==='saveg'){const n=$('#gn').value.trim();if(!n)return toast('Name the group');
+    const ids=[...document.querySelectorAll('#mb .pkt.on')].map(x=>x.dataset.id),ci=Math.max(0,[...document.querySelectorAll('#mb .sws i')].findIndex(x=>x.classList.contains('on')));
+    if(id){Object.assign(S.groups.find(x=>x.id===id),{name:n,ids,color:ci})}else S.groups.push({id:uid(),name:n,ids,color:ci});save();closeM();render()}
   else if(a==='delg'){if(confirm('Delete this group? Books stay in your library.')){S.groups=S.groups.filter(x=>x.id!==id);save();closeM();render()}}
   else if(a==='grp')showGroup(id);
   else if(a==='qr')showQR(id);
   else if(a==='saveqr')saveQR();
   else if(a==='scanqr')scan(t=>{const i=t.indexOf('text=');openHash(i>-1?decodeURIComponent(t.slice(i+5)):t.slice(Math.max(0,t.indexOf('#'))))||toast('That is not a Bookshelf group code')});
-  else if(a==='cont'){cont=!cont;ls('bookshelf.cont',cont?'1':'0');updC()}
-  else if(a==='covers'){cv=null;showCovers(id)}
-  else if(a==='prof')showProfile('me');
-  else if(a==='ptab')showProfile(id);
-  else if(a==='vt'){vw=vw==='grid'?'list':'grid';ls('bookshelf.view',vw);render()}
-  else if(a==='srt'){const o=['title','author','new','out'];srt=o[(o.indexOf(srt)+1)%4];ls('bookshelf.sort',srt);render()}
-  else if(a==='fav'){const b=S.books.find(x=>x.id===id);if(b){b.fav=!b.fav;save();if($('#pb'))showProfile();else if(el.closest('#mb'))el.textContent=b.fav?'Remove favorite':'Add to favorites';render()}}
-  else if(a==='avpick')$('#avf').click();
-  else if(a==='avrm'){S.profile.avatar='';save();updAv();showProfile()}
-  else if(a==='savep'){S.profile=Object.assign(S.profile||{},{name:$('#pn').value.trim(),bio:$('#pbio').value.trim(),genre:$('#pg').value.trim(),place:$('#pl').value.trim()});save();updAv();toast('Profile saved')}
-  else if(a==='wlook'){const i=(x=>toIsbn(x)||x)($('#wi').value.replace(/[^\dX]/gi,'').toUpperCase());if(!i)return toast('Enter an ISBN first');toast('Looking up…');
-    (async()=>{const d=await lookup(i)||await lookupBC(i);if(d){$('#wi').value=i;$('#wt').value=d.title||'';$('#wa').value=d.author||'';wishCover=d.cover||''}else toast('No match. Type the details in.')})()}
-  else if(a==='wadd'){const t=$('#wt').value.trim();if(!t)return toast('Add a title');const i=$('#wi').value.replace(/[^\dX]/gi,'').toUpperCase();
-    (S.wish=S.wish||[]).push({id:uid(),title:t,author:$('#wa').value.trim(),isbn:toIsbn(i)||i,cover:wishCover});wishCover='';save();toast('Added to wishlist');showProfile()}
-  else if(a==='wdel'){S.wish=S.wish.filter(w=>w.id!==id);save();showProfile()}
-  else if(a==='wgot'){const w=S.wish.find(x=>x.id===id);if(w){addBook({title:w.title,author:w.author,isbn:w.isbn,cover:w.cover});S.wish=S.wish.filter(x=>x.id!==id);save();render();toast('Moved to your library');showProfile()}}
-  else if(a==='wsh'||a==='shbook')shareThing('book',id);
-  else if(a==='shr')shareThing(id);
-  else if(a==='shcopy'){const sh=(S.shares||[]).find(z=>z.id===id);if(!sh)return;(async()=>{if(SHARE_WORKER&&user&&fb){try{await publish(sh,true)}catch(err){}}const l=shLink(id);try{await navigator.clipboard.writeText(l);toast('Link copied')}catch(err){toast(l)}})()}
-  else if(a==='shstop'){S.shares=(S.shares||[]).filter(x=>x.id!==id);save();if(fb)fb.d.doc('shares/'+id).delete().catch(()=>{});showProfile()}
-  else if(a==='shx')closeShare();
-  else if(a==='csv'){const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-    const rows=[['Title','Author','ISBN','Status','Favorite','Times out','With','Notes'],...S.books.map(b=>[b.title,b.author,b.isbn,b.out?'Out':'In storage',b.fav?'Yes':'',b.outs||0,b.holder||'',b.notes])];
-    const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));l.download='bookshelf.csv';l.click()}
-  else if(a==='pick')selCov(+el.dataset.i);
-  else if(a==='addcov')$('#cvf').click();
-  else if(a==='usecov'){const b=cv&&S.books.find(x=>x.id===cv.id);if(b){if(cv.sel)b.cover=cv.sel;save();closeM();render()}}
-  else if(a==='delcov')delCov();
   else if(a==='scang'){
     const n=$('#gn').value.trim();if(!n)return toast('Name the group first');
-    const ids=[...document.querySelectorAll('#mb .ck input:checked')].map(x=>x.value);
+    const ids=[...document.querySelectorAll('#mb .pkt.on')].map(x=>x.dataset.id),ci=Math.max(0,[...document.querySelectorAll('#mb .sws i')].findIndex(x=>x.classList.contains('on')));
     let g=S.groups.find(x=>x.id===id);
-    if(g){g.name=n;g.ids=ids}else{g={id:uid(),name:n,ids};S.groups.push(g)}
+    if(g){g.name=n;g.ids=ids;g.color=ci}else{g={id:uid(),name:n,ids,color:ci};S.groups.push(g)}
     save();render();scanG=g.id;scanBook();
-    if($('#sc')){scs('Scan books into '+n);scanDone=()=>{scanG=null;groupForm(g.id);render()}}else scanG=null;
+    if($('#sc')){scs('Scanning into '+n);scanDone=()=>{scanG=null;groupForm(g.id);render()}}else scanG=null;
   }
+  else if(a==='cont'){cont=!cont;ls('bookshelf.cont',cont?'1':'0');updC()}
+  else if(a==='covers'){if(Date.now()-swBlock<400)return;cv=null;showCovers(id);if(el.dataset.back){const gid=el.dataset.back;cv.back=()=>showGroup(gid)}}
+  else if(a==='pick')selCov(+el.dataset.i);
+  else if(a==='addcov')$('#cvf').click();
+  else if(a==='usecov'){const b=cv&&S.books.find(x=>x.id===cv.id);if(b){if(cv.sel)b.cover=cv.sel;save();const f=cv.back;closeM();render();if(f)f()}}
+  else if(a==='cvclose'){const f=cv&&cv.back;closeM();if(f)f()}
+  else if(a==='delcov')delCov();
+  else if(a==='sort')showSort();
+  else if(a==='setsort'){srt=id;ls('bookshelf.sort',srt);closeM();render()}
+  else if(a==='vt'){vw=vw==='grid'?'list':'grid';ls('bookshelf.view',vw);render()}
+  else if(a==='swgrp')showGroupPick(id);
+  else if(a==='swdel'){delBook(id)}
+  else if(a==='gtog'){const g=S.groups.find(x=>x.id===id),bid=el.dataset.b;if(g){const k=g.ids.indexOf(bid);if(k>-1)g.ids.splice(k,1);else g.ids.push(bid);save();render();showGroupPick(bid)}}
+  else if(a==='gnew'){const n=$('#ng').value.trim();if(!n)return toast('Name the group');const bid=el.dataset.b;S.groups.push({id:uid(),name:n,ids:[bid],color:S.groups.length%GC.length});save();render();showGroupPick(bid)}
+  else if(a==='undo'){const u=$('#ut');if(u._u)u._u();u.style.display='none'}
+  else if(a==='rand')showRandom();
+  else if(a==='rspin')spin();
+  else if(a==='rpool'){rAll=id==='all';showRandom()}
+  else if(a==='prof')showProfile('me');
+  else if(a==='ptab')showProfile(id);
+  else if(a==='fav'){const b=S.books.find(x=>x.id===id);if(b){b.fav=!b.fav;save();if(el.closest('#mb')&&!$('#pb'))el.textContent=b.fav?'Remove favorite':'Add to favorites';render();if($('#pb'))showProfile()}}
+  else if(a==='avpick')$('#avf').click();
+  else if(a==='avrm'){S.profile.avatar='';save();updAv();showProfile()}
+  else if(a==='savep')saveProfile();
+  else if(a==='hcheck')checkHandle();
+  else if(a==='wlook'){const i=(x=>toIsbn(x)||x)($('#wi').value.replace(/[^\dX]/gi,'').toUpperCase());if(!i)return toast('Enter an ISBN first');toast('Looking up\u2026');
+    (async()=>{const d=await lookup(i)||await lookupBC(i);if(d){$('#wi').value=i;$('#wt').value=d.title||'';$('#wa').value=d.author||'';wishCover=d.cover||''}else toast('No match. Type the details in.')})()}
+  else if(a==='wadd'){const t=$('#wt').value.trim();if(!t)return toast('Add a title');addWish({title:t,author:$('#wa').value.trim(),isbn:$('#wi').value.replace(/[^\dX]/gi,'').toUpperCase(),cover:wishCover});wishCover='';showProfile()}
+  else if(a==='wdel'){S.wish=S.wish.filter(w=>w.id!==id);save();showProfile()}
+  else if(a==='wgot'){const w=S.wish.find(x=>x.id===id);if(w){addBook({title:w.title,author:w.author,isbn:w.isbn,cover:w.cover,msrp:w.msrp,cur:w.cur});S.wish=S.wish.filter(x=>x.id!==id);save();render();toast('Moved to your library');showProfile()}}
+  else if(a==='wsh')shareSec('wish',id);
+  else if(a==='shbook')shareSec('book',id);
+  else if(a==='shr')shareSec(el.dataset.s||'',el.dataset.id||'');
+  else if(a==='shcopy'){const l=shLink(el.dataset.s||'',el.dataset.id||'');navigator.clipboard.writeText(l).then(()=>toast('Link copied')).catch(()=>toast(l))}
+  else if(a==='shrm'){S.profile.shb=(S.profile.shb||[]).filter(z=>z.id!==id);save();pubPush().catch(()=>{});showProfile()}
+  else if(a==='shx')closePage();
+  else if(a==='vsec'){pg.sec=el.dataset.s||'';pg.id='';drawPage();syncHash()}
+  else if(a==='cfgv'){const v=el.dataset.v;setCfg(el.dataset.k,v==='0'?0:v==='1'?1:v);showProfile()}
+  else if(a==='tsound'){audioInit();ding();if(!AC)toast('Sound is not available in this browser')}
+  else if(a==='rstcfg'){cfg={sound:1,flash:1,theme:'auto',dense:0,outdays:1,dev:0,beta:{}};ls('bookshelf.cfg',JSON.stringify(cfg));applyCfg();render();showProfile()}
+  else if(a==='csv'){const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+    const rows=[['Title','Author','ISBN','EAN','MSRP','Currency','Status','Favorite','Times out','Publisher','Pages','With','Notes'],...S.books.map(b=>[b.title,b.author,b.isbn,b.ean||'',b.msrp!=null?b.msrp:'',b.cur||'',b.out?'Out':'In storage',b.fav?'Yes':'',b.outs||0,b.pub||'',b.pages||'',b.holder||'',b.notes])];
+    const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));l.download='bookshelf.csv';l.click()}
   else if(a==='mic')dictate(id,el.dataset.d==='1',el);
   else if(a==='acct')acctModal();
   else if(a==='google')authDo(()=>fb.a.signInWithPopup(new firebase.auth.GoogleAuthProvider()));
@@ -856,14 +1248,28 @@ document.addEventListener('click',e=>{
   else if(a==='reset'){const e=$('#em').value.trim();if(!e)return toast('Type your email first');fb.a.sendPasswordResetEmail(e).then(()=>toast('Password reset email sent')).catch(x=>toast(authMsg(x)))}
   else if(a==='signout')fb.a.signOut().then(closeM);
   else if(a==='guest'){ls('bookshelf.guest','1');closeM()}
-  else if(a==='set')settings();
   else if(a==='saveu'){S.url=$('#url').value.trim();save();toast('Link saved')}
   else if(a==='exp'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));l.download='bookshelf-backup.json';l.click()}
   else if(a==='imp')$('#f').click();
 });
-document.addEventListener('change',e=>{if(e.target.id==='cont'){cont=e.target.checked;ls('bookshelf.cont',cont?'1':'0')}else if(e.target.id==='cvf'){const f=e.target.files[0];if(f)addPhoto(f)}else if(e.target.id==='avf'){const f=e.target.files[0];if(f)setAvatar(f)}});
-document.addEventListener('input',e=>{if(e.target.id==='s'){q=e.target.value;list()}});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.cfg){const k=t.dataset.cfg;if(k==='cont'){cont=t.checked;ls('bookshelf.cont',cont?'1':'0')}else{setCfg(k,t.checked?1:0);if(k==='dev')showProfile()}}
+  else if(t.dataset.beta)setBeta(t.dataset.beta,t.checked);
+  else if(t.dataset.sec)secToggle(t.dataset.sec,t.checked);
+  else if(t.id==='cvf'){const f=t.files[0];if(f)addPhoto(f)}
+  else if(t.id==='avf'){const f=t.files[0];if(f)setAvatar(f)}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.id==='s'){q=t.value;list()}
+  else if(t.id==='isbn'&&$('#tpv')){clearTimeout(tlT);tlT=setTimeout(typeLook,650)}
+  else if(t.id==='pks'){const k=t.value.toLowerCase();document.querySelectorAll('#mb .pkt').forEach(x=>x.style.display=x.dataset.q.includes(k)?'':'none')}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='qs'){srQ=e.target.value.trim();doSearch()}});
 window.addEventListener('hashchange',()=>booted&&openHash(location.hash));
+window.addEventListener('resize',applyCfg);
+applyCfg();
 render();
 initCloud();
 </script>
